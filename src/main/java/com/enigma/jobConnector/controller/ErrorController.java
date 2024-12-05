@@ -13,9 +13,11 @@ import org.springframework.web.server.ResponseStatusException;
 @RestControllerAdvice
 public class ErrorController {
 
+
     @ExceptionHandler({ResponseStatusException.class})
     public ResponseEntity<?> handlingResponseStatusException(ResponseStatusException e) {
         HttpStatusCode statusCode = e.getStatusCode();
+
         return ResponseUtil.buildResponse(HttpStatus.valueOf(statusCode.value()), e.getReason(), null);
     }
 

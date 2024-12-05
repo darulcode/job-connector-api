@@ -36,15 +36,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
-        try {
-            AuthResponse login = authService.login(authRequest);
-            setCookie(response, login.getRefreshToken());
-            log.info("Login successful : {}", login.getId());
-            return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_LOGIN_MESSAGE, login);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseUtil.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null);
-        }
+        AuthResponse login = authService.login(authRequest);
+        setCookie(response, login.getRefreshToken());
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_LOGIN_MESSAGE, login);
     }
 
     @PostMapping(path = "/refresh-token")

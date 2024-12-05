@@ -1,5 +1,6 @@
 package com.enigma.jobConnector.services.servicesImpl;
 
+import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.dto.request.AuthRequest;
 import com.enigma.jobConnector.dto.response.AuthResponse;
 import com.enigma.jobConnector.entity.User;
@@ -10,14 +11,12 @@ import com.enigma.jobConnector.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse refreshToken(String token) {
         String userId = refreshTokenService.getUserIdByToken(token);
         if (userId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid refresh token");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.INVALID_REFRESH_TOKEN);
         }
         User userAccount = userService.getOne(userId);
         String newRefreshToken = refreshTokenService.rotateRefreshToken(userId);

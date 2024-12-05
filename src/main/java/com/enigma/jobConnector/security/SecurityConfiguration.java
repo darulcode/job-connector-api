@@ -39,6 +39,8 @@ public class SecurityConfiguration {
                                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                                 .requestMatchers("/api/auth/login").permitAll()
                                 .requestMatchers("/api/auth/refresh-token").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/user").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/user/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
