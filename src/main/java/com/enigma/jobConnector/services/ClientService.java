@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 
 public interface ClientService {
     ClientResponse createClient(ClientRequest clientRequest);
-    ClientResponse updateClient(ClientRequest clientRequest);
+    ClientResponse updateClient(String id,ClientRequest clientRequest);
     void deleteClient(String id);
     Client getOne(String id);
     ClientResponse getClientDetail(String id);

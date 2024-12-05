@@ -46,9 +46,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientResponse updateClient(ClientRequest clientRequest) {
+    public ClientResponse updateClient(String id,ClientRequest clientRequest) {
         validateCurrentUserRole();
-        Client client = getOne(clientRequest.getId());
+        Client client = getOne(id);
         client.setName(clientRequest.getName());
         clientRepository.saveAndFlush(client);
         return getClientResponse(client);

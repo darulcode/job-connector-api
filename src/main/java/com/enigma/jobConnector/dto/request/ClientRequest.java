@@ -8,6 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class ClientRequest {
-    private String id;
     private String name;
 }

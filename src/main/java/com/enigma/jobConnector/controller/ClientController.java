@@ -49,9 +49,9 @@ public class ClientController {
         return ResponseUtil.buildResponse(HttpStatus.CREATED, Constant.SUCCESS_CREATED_CLIENT, response);
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateClient(@RequestBody ClientRequest request) {
-        ClientResponse response = clientService.updateClient(request);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateClient(@PathVariable String id,@RequestBody ClientRequest request) {
+        ClientResponse response = clientService.updateClient(id, request);
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_UPDATE_CLIENT, response);
     }
 
