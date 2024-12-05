@@ -58,7 +58,7 @@ public class ClientServiceImpl implements ClientService {
     public void deleteClient(String id) {
         validateCurrentUserRole();
         Optional<Client> client = clientRepository.findById(id);
-        if (!client.isPresent()) {
+        if (client.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, Constant.CLIENT_NOT_FOUND);
         }
         clientRepository.delete(client.get());
