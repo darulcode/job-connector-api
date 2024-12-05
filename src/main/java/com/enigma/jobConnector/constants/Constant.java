@@ -15,16 +15,27 @@ public class Constant {
 
 
     public static final String AUTH_API = "/api/auth";
+
     public static final String USER_API = "/api/user";
+
+    public static final String CLIENT_API = "/api/client";
+
 
 
     public static final String OK = "OK";
     public static final String SUCCESS_LOGIN_MESSAGE="Successfully logged in";
+
     public static final String SUCCESS_CREATE_USER="Successfully create user";
     public static final String SUCCESS_UPDATE_USER="Successfully update user";
     public static final String SUCCESS_DELETE_USER="Successfully delete user";
     public static final String SUCCESS_FETCHING_USER="Successfully fetch user";
     public static final String SUCCESS_FETCHING_ALL_USER="Successfully fetch all user";
+
+    public static final String SUCCESS_FETCH_ALL_CLIENT = "Successfully fetching all clients";
+    public static final String SUCCESS_FETCH_CLIENT = "Successfully fetching client";
+    public static final String SUCCESS_CREATED_CLIENT = "Successfully created client";
+    public static final String SUCCESS_UPDATE_CLIENT = "Successfully updated client";
+    public static final String SUCCESS_DELETE_CLIENT = "Successfully deleted client";
 
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
@@ -38,4 +49,6 @@ public class Constant {
     public static final String EMAIL_ALREADY_EXIST = "Username or email already exist";
     public static final String USERNAME_NOT_FOUND = "Username not found";
     public static final String REFRESH_TOKEN_REQUIRED_MESSAGE="Refresh Token is required";
+    public static final String CLIENT_ALREADY_EXIST = "Client already exist";
+    public static final String CLIENT_NOT_FOUND = "Client not found";
 }

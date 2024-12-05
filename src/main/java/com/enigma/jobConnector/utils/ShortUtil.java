@@ -1,6 +1,5 @@
 package com.enigma.jobConnector.utils;
 
-
 import org.springframework.data.domain.Sort;
 
 public class ShortUtil {

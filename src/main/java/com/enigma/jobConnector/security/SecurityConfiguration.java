@@ -41,6 +41,8 @@ public class SecurityConfiguration {
                                 .requestMatchers("/api/auth/refresh-token").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/user").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/user/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/client").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/client/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
