@@ -29,6 +29,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
+import static com.enigma.jobConnector.utils.AuthenticationContextUtil.validateCurrentUser;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -120,6 +122,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponse getSelfUserDetails() {
+        validateCurrentUser();
+        User currentUser = AuthenticationContextUtil.getCurrentUser();
+        return getUserResponse(getOne(currentUser.getId()));
+    }
+
+    @Override
     public User getOne(String id) {
         return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USER_NOT_FOUND));
     }
@@ -138,4 +147,7 @@ public class UserServiceImpl implements UserService {
                 .role(user.getRole().getDescription())
                 .build();
     }
+
+
+
 }

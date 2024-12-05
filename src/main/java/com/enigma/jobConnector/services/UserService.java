@@ -16,4 +16,5 @@ public interface UserService extends UserDetailsService {
     void delete(String id);
     Page<UserResponse> findAllUser(UserSearchRequest userSearchRequest);
     UserResponse getUserDetails(String id);
+    UserResponse getSelfUserDetails();
 }

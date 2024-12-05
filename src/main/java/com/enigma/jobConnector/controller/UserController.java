@@ -38,6 +38,12 @@ public class UserController {
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_DELETE_USER, null);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<?> me() {
+        UserResponse response = userService.getSelfUserDetails();
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_FETCHING_USER, response);
+    }
+
     @GetMapping
     public ResponseEntity<?> getAllUsers(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
