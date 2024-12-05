@@ -9,7 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class UserRequest {
-    private String id;
     private String name;
     private String username;
     private String password;

@@ -26,9 +26,9 @@ public class UserController {
         return ResponseUtil.buildResponse(HttpStatus.CREATED, Constant.SUCCESS_CREATE_USER, userResponse);
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody UserRequest userRequest) {
-        UserResponse response = userService.update(userRequest);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable String id,@RequestBody UserRequest userRequest) {
+        UserResponse response = userService.update(id , userRequest);
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_UPDATE_USER, response);
     }
 
