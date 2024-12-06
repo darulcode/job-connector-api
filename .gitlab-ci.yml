@@ -12,11 +12,8 @@ deploy:
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
     - git config --global credential.helper store
     - git config --global url."https://ahmaddarul72:zhx-3EZYCL2sPuNqseyK@git.enigmacamp.com/".insteadOf "https://git.enigmacamp.com/"
-    - ls
-    - cd $PROJECT_DIR
     - git pull origin master
     - docker-compose up -d
 
 variables:
   SSH_HOST: "152.42.224.141"
-  PROJECT_DIR: "enigma-job-connector-api"
