@@ -27,7 +27,6 @@ build:
     - docker
   before_script:
     - echo "Configuring Docker client..."
-    - apk add --no-cache docker-cli
   script:
     - echo "Starting Maven build..."
     - mvn clean install -DskipTests
