@@ -19,7 +19,6 @@ deploy:
         docker compose down &&
         docker compose up -d
       "
-
 variables:
   SSH_HOST: "152.42.224.141"    # IP VPS Anda
   SSH_USER: "root"          # Ganti dengan username SSH yang sesuai (misalnya 'root' atau pengguna lain)
