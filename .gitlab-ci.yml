@@ -2,20 +2,23 @@ stages:
   - deploy
 
 variables:
-  VPS_SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY
-  SERVER_IP: "152.42.224.141"
-  SERVER_USER: "root"
+  GITLAB_USER: "ahmaddarul72"
+  GITLAB_SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY
 
 deploy:
   stage: deploy
   tags:
-    - cq
+    - deploy
   script:
-    - echo "Pulling latest changes from origin master..."
-    - ssh -i <(echo "$VPS_SSH_PRIVATE_KEY") $SERVER_USER@$SERVER_IP << 'EOF'
+    - mkdir -p /home/gitlab-runner/.ssh
+    - echo "$GITLAB_SSH_PRIVATE_KEY" > /home/gitlab-runner/.ssh/id_rsa
+    - chmod 600 /home/gitlab-runner/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add /home/gitlab-runner/.ssh/id_rsa
+    - ssh -o StrictHostKeyChecking=no -i /home/gitlab-runner/.ssh/id_rsa root@152.42.224.141 << EOF
       cd enigma-job-connector-api
       git pull origin master
-      docker compose up -d
-      EOF
+      docker-compose down
+      docker-compose up -d
   only:
     - master
