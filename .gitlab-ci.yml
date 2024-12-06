@@ -21,11 +21,10 @@ build:
 #  script:
 #    - mvn test
 
+# Tahap Deploy
 deploy:
   stage: deploy
   image: docker:latest
-  tags:
-    - docker
   services:
     - docker:dind
   before_script:
@@ -34,15 +33,17 @@ deploy:
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+    # Setup Docker client to communicate with Docker-in-Docker service
+    - export DOCKER_HOST=tcp://docker:2375
+    - docker info  # Verifikasi koneksi Docker
   script:
-    # Build Docker image
-    - docker build -t jobconnector-image .
-    # Push ke registry Docker jika perlu
-    - docker tag jobconnector-image $DOCKER_REGISTRY/jobconnector-image:latest
-    - docker push $DOCKER_REGISTRY/jobconnector-image:latest
-    # Kirim file jar ke server
-    - scp target/jobConnector-0.0.1-SNAPSHOT.jar $SSH_USER@$SSH_HOST:/path/to/deploy
-    # Restart aplikasi di server dengan Docker Compose
-    - ssh $SSH_USER@$SSH_HOST "cd /path/to/deploy && docker-compose down && docker-compose up -d"
+    # Build Docker image for job-connector-api
+    - docker build -t jobconnector-api-image .
+    # Tag Docker image and push to Docker registry
+    - docker tag jobconnector-api-image $DOCKER_REGISTRY/jobconnector-api-image:latest
+    - docker push $DOCKER_REGISTRY/jobconnector-api-image:latest
+    # Deploy with Docker Compose
+    - docker-compose -f docker-compose.yml down
+    - docker-compose -f docker-compose.yml up -d
   only:
     - master
