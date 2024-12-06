@@ -11,7 +11,7 @@ deploy:
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
     - |
-      ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@152.42.224.141 "
+      ssh root@152.42.224.141 "
         cd $PROJECT_DIR &&
         git pull origin master &&
         docker compose down &&
