@@ -15,7 +15,6 @@ deploy:
     - ssh -i <(echo "$VPS_SSH_PRIVATE_KEY") $SERVER_USER@$SERVER_IP << 'EOF'
       cd enigma-job-connector-api
       git pull origin master
-      docker compose down
       docker compose up -d
       EOF
   only:
