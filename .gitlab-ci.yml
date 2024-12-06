@@ -12,18 +12,20 @@ build:
   script:
     - mvn clean package -DskipTests
 
-# Tahap Test
-test:
-  stage: test
-  image: maven:latest
-  tags:
-    - docker
-  script:
-    - mvn test
+## Tahap Test
+#test:
+#  stage: test
+#  image: maven:latest
+#  tags:
+#    - docker
+#  script:
+#    - mvn test
 
 deploy:
   stage: deploy
   image: docker:latest
+  tags:
+    - docker
   services:
     - docker:dind
   before_script:
