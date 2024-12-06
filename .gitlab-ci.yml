@@ -1,9 +1,10 @@
 stages:
   - build
-  - test
   - deploy
 
 variables:
+  DOCKER_REGISTRY_PASSWORD: "1Ad4Jm7Tw@#"
+  DOCKER_REGISTRY_USER: "darulcode72"
   DOCKER_REGISTRY: "docker.io"
   DOCKER_IMAGE_NAME: "darulcode72/job-connector-api"
   POSTGRES_DB: "enigma_job_connector"
@@ -25,10 +26,16 @@ build:
   tags:
     - docker
   script:
+    - echo "Starting build process..."
     - mvn clean install -DskipTests
+    - echo "Building Docker image..."
     - docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME .
-    - docker login -u darulcode72 -p 1Ad4Jm7Tw@# $DOCKER_REGISTRY
+    - echo "Logging into Docker registry..."
+    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USER" --password-stdin
+    - echo "Pushing Docker image..."
     - docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
+  only:
+    - master
 
 # Deploy stage
 deploy:
@@ -39,16 +46,22 @@ deploy:
   only:
     - master
   script:
+    - echo "Preparing for deployment..."
     - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H 103.127.97.132 >> ~/.ssh/known_hosts
+    - echo "Connecting to deployment server..."
     - ssh Poseidon@103.127.97.132 "
-      docker login -u darulcode72 -p 1Ad4Jm7Tw@# $DOCKER_REGISTRY &&
+      echo 'Logging into Docker registry...' &&
+      echo '$DOCKER_REGISTRY_PASSWORD' | docker login -u '$DOCKER_REGISTRY_USER' --password-stdin &&
+      echo 'Pulling the latest Docker image...' &&
       docker pull $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME &&
+      echo 'Stopping and removing old container...' &&
       docker stop job-connector-api || true &&
       docker rm job-connector-api || true &&
+      echo 'Starting new container...' &&
       docker run -d --name job-connector-api \
       -e POSTGRES_DB=$POSTGRES_DB \
       -e POSTGRES_USER=$POSTGRES_USER \
