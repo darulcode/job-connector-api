@@ -12,9 +12,9 @@ deploy:
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
 
-    # Mengatur git untuk menggunakan SSH, tanpa kredensial masked
+    # Mengatur git untuk menggunakan SSH, tanpa kredensial yang masked
+    - git config --global --unset credential.helper  # Hapus pengaturan credential
     - git config --global url."git@git.enigmacamp.com:".insteadOf "https://git.enigmacamp.com/"
-    - git config --global credential.helper store
 
     # SSH ke VPS dan menjalankan perintah
     - |
