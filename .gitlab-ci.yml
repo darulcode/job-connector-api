@@ -1,84 +1,13 @@
 stages:
-  - build
   - deploy
 
-variables:
-  DOCKER_REGISTRY: "darulcode72"
-  DOCKER_IMAGE_NAME: "job-connector-api"
-  POSTGRES_DB: "enigma_job_connector"
-  POSTGRES_USER: "postgres"
-  POSTGRES_PASSWORD: "123"
-  JWT_SECRET: "secret"
-  JWT_EXPIRATION_IN_MINUTES: 5
-  JWT_ISSUER: "Enigma"
-  REFRESH_TOKEN_EXPIRATION_IN_HOUR: 24
-  REDIS_HOST: "job-connector-redis"
-  REDIS_PORT: 6379
-  POSTGRES_HOST: "job-connector-postgres"
-  DOCKER_IMAGE_TAG: "latest"
-  DOCKER_REGISTRY_USER: "darulcode72"
-  DOCKER_REGISTRY_PASSWORD: "1Ad4Jm7Tw@#"
-
-# Build stage
-build:
-  image: maven:3.9.4-eclipse-temurin-17
-  stage: build
-  services:
-    - docker:24.0.5-dind
-  tags:
-    - docker
-  before_script:
-    - echo "Updating package lists..."
-    - apt-get update
-    - echo "Installing Docker CLI..."
-    - apt-get install -y docker.io
-  script:
-    - echo "Starting Maven build..."
-    - mvn clean install -DskipTests
-    - echo "Building Docker image..."
-    - docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME .
-    - echo "Logging into Docker registry..."
-    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USER" --password-stdin
-    - echo "Pushing Docker image to registry..."
-    - docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
-  only:
-    - master
-
-# Deploy stage
 deploy:
-  image: alpine:latest
   stage: deploy
-  tags:
-    - deploy
-  before_script:
-    - apk add --no-cache openssh-client
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H 103.127.97.132 >> ~/.ssh/known_hosts
   script:
-    - echo "Connecting to deployment server..."
-    - ssh Poseidon@103.127.97.132 <<EOF
-      echo "Logging into Docker registry..."
-      echo "1Ad4Jm7Tw@#" | docker login -u "darulcode72" --password-stdin
-      echo "Pulling latest Docker image..."
-      docker pull darulcode72/job-connector-api:$CI_COMMIT_REF_NAME
-      echo "Stopping and removing old container..."
-      docker stop job-connector-api || true
-      docker rm job-connector-api || true
-      echo "Starting new container..."
-      docker run -d --name job-connector-api \
-      -e POSTGRES_DB=$POSTGRES_DB \
-      -e POSTGRES_USER=$POSTGRES_USER \
-      -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
-      -e JWT_SECRET=$JWT_SECRET \
-      -e JWT_EXPIRATION_IN_MINUTES=$JWT_EXPIRATION_IN_MINUTES \
-      -e JWT_ISSUER=$JWT_ISSUER \
-      -e REFRESH_TOKEN_EXPIRATION_IN_HOUR=$REFRESH_TOKEN_EXPIRATION_IN_HOUR \
-      -e REDIS_HOST=$REDIS_HOST \
-      -e REDIS_PORT=$REDIS_PORT \
-      -e POSTGRES_HOST=$POSTGRES_HOST \
-      -p 8080:8080 \
-      darulcode72/job-connector-api:$CI_COMMIT_REF_NAME
-  only:
-    - master
+    - ssh -i $SSH_PRIVATE_KEY $SSH_USER@$SSH_HOST "
+      cd $PROJECT_DIR &&
+      git pull origin master &&
+      docker-compose up -d
+      "
+variables:
+  PROJECT_DIR: "enigma-job-connector-api"
