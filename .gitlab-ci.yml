@@ -3,8 +3,6 @@ stages:
   - deploy
 
 variables:
-  DOCKER_REGISTRY_PASSWORD: "1Ad4Jm7Tw@#"
-  DOCKER_REGISTRY_USER: "darulcode72"
   DOCKER_REGISTRY: "docker.io"
   DOCKER_IMAGE_NAME: "darulcode72/job-connector-api"
   POSTGRES_DB: "enigma_job_connector"
@@ -21,47 +19,50 @@ variables:
 
 # Build stage
 build:
-  image: maven:3.9.4-eclipse-temurin-17
+  image: docker:24.0.5
   stage: build
+  services:
+    - docker:24.0.5-dind
   tags:
     - docker
+  before_script:
+    - echo "Configuring Docker client..."
+    - apk add --no-cache docker-cli
   script:
-    - echo "Starting build process..."
+    - echo "Starting Maven build..."
     - mvn clean install -DskipTests
     - echo "Building Docker image..."
     - docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME .
     - echo "Logging into Docker registry..."
     - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USER" --password-stdin
-    - echo "Pushing Docker image..."
+    - echo "Pushing Docker image to registry..."
     - docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
   only:
     - master
 
 # Deploy stage
 deploy:
-  image: docker:24.0.5
+  image: alpine:latest
   stage: deploy
   tags:
     - deploy
-  only:
-    - master
-  script:
-    - echo "Preparing for deployment..."
+  before_script:
     - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H 103.127.97.132 >> ~/.ssh/known_hosts
+  script:
     - echo "Connecting to deployment server..."
-    - ssh Poseidon@103.127.97.132 "
-      echo 'Logging into Docker registry...' &&
-      echo '$DOCKER_REGISTRY_PASSWORD' | docker login -u '$DOCKER_REGISTRY_USER' --password-stdin &&
-      echo 'Pulling the latest Docker image...' &&
-      docker pull $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME &&
-      echo 'Stopping and removing old container...' &&
-      docker stop job-connector-api || true &&
-      docker rm job-connector-api || true &&
-      echo 'Starting new container...' &&
+    - ssh Poseidon@103.127.97.132 <<EOF
+      echo "Logging into Docker registry..."
+      echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USER" --password-stdin
+      echo "Pulling latest Docker image..."
+      docker pull $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
+      echo "Stopping and removing old container..."
+      docker stop job-connector-api || true
+      docker rm job-connector-api || true
+      echo "Starting new container..."
       docker run -d --name job-connector-api \
       -e POSTGRES_DB=$POSTGRES_DB \
       -e POSTGRES_USER=$POSTGRES_USER \
@@ -74,4 +75,6 @@ deploy:
       -e REDIS_PORT=$REDIS_PORT \
       -e POSTGRES_HOST=$POSTGRES_HOST \
       -p 8080:8080 \
-      $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME"
+      $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
+  only:
+    - master
