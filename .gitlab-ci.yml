@@ -11,14 +11,11 @@ deploy:
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
     - |
-      ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
+      ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no root@152.42.224.141 "
         cd $PROJECT_DIR &&
         git pull origin master &&
         docker compose down &&
         docker compose up -d
       "
 variables:
-  SSH_HOST: "152.42.224.141"    # IP VPS Anda
-  SSH_USER: "root"          # Ganti dengan username SSH yang sesuai (misalnya 'root' atau pengguna lain)
-  PROJECT_DIR: "enigma-job-connector-api"  # Direktori proyek Anda di VPS
-  SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY  # Pastikan variabel ini berisi private key yang valid untuk autentikasi SSH
+  PROJECT_DIR: "enigma-job-connector-api"
