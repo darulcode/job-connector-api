@@ -19,7 +19,7 @@ variables:
 
 # Build stage
 build:
-  image: docker:24.0.5
+  image: maven:3.9.4-eclipse-temurin-17
   stage: build
   services:
     - docker:24.0.5-dind
@@ -76,5 +76,6 @@ deploy:
       -e POSTGRES_HOST=$POSTGRES_HOST \
       -p 8080:8080 \
       $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
+
   only:
     - master
