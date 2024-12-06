@@ -23,6 +23,8 @@ before_script:
 
 # Build stage
 build:
+  tags:
+    - docker
   stage: build
   script:
     - mvn clean install -DskipTests
@@ -38,6 +40,8 @@ build:
 
 # Deploy stage
 deploy:
+  tags:
+    - docker
   stage: deploy
   only:
     - master
