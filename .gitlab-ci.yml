@@ -3,26 +3,50 @@ stages:
   - test
   - deploy
 
+variables:
+  DOCKER_REGISTRY: "docker.io"
+  DOCKER_IMAGE_NAME: "yourusername/job-connector-api"
+  POSTGRES_DB: "enigma_job_connector"
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "123"
+  JWT_SECRET: "secret"
+  JWT_EXPIRATION_IN_MINUTES: 5
+  JWT_ISSUER: "Enigma"
+  REFRESH_TOKEN_EXPIRATION_IN_HOUR: 24
+  REDIS_HOST: "job-connector-redis"
+  REDIS_PORT: 6379
+  POSTGRES_HOST: "job-connector-postgres"
+
 before_script:
-  - mkdir -p ~/.ssh
-  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-  - chmod 600 ~/.ssh/id_rsa
-  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+  - export DOCKER_BUILDKIT=1
+  - export COMPOSE_DOCKER_CLI_EXPERIMENTAL=enabled
 
 build:
   stage: build
+  tags:
+    - Poseidon
   script:
-    - git clone git@git.enigmacamp.com:enigma-camp/offline-class-pascal/pascal-18/final-project/team-1-enigma-job-connector/backend/enigma-job-connector-api.git
-    - cd enigma-job-connector-api
-    - mvn clean install
+    - docker-compose -f docker-compose.yml build
+  only:
+    - master
+    - develop
 
-test:
-  stage: test
-  script:
-    - mvn test
+#test:
+#  stage: test
+#  tags:
+#    - Poseidon
+#  script:
+#    - docker-compose -f docker-compose.yml up -d job-connector-postgres job-connector-redis
+#    - docker-compose -f docker-compose.yml exec job-connector-api ./run-tests.sh
+#    - docker-compose -f docker-compose.yml down
+#  only:
+#    - master
 
 deploy:
   stage: deploy
+  tags:
+    - Poseidon
   script:
-    - docker build -t job-connector-api .
-    - docker-compose up -d
+    - docker-compose -f docker-compose.yml up -d
+  only:
+    - master
