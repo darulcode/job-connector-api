@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   job-connector-postgres:
     container_name: job-connector-postgres
@@ -6,8 +7,8 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: bbZvjXpBC1CP0PP
-      POSTGRES_DB: job_connector_db
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: enigma_job_connector
     volumes:
       - job-connector-postgres-data:/var/lib/postgresql/data
     networks:
@@ -15,8 +16,8 @@ services:
 
   job-connector-redis:
     container_name: job-connector-redis
-    restart: always
     image: redis:alpine
+    restart: always
     volumes:
       - job-connector-redis-data:/data
     networks:
@@ -29,11 +30,11 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      HOST_NAME: localhost
-      DATABASE_NAME: job_connector_db
-      DB_USERNAME: postgres
-      DB_PASSWORD: bbZvjXpBC1CP0PP
-      JWT_SECRET: vlJF587ye4KcoDifRiI6A148FSQzfpFw
+      HOST_NAME: job-connector-postgres
+      POSTGRES_DB: enigma_job_connector
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      JWT_SECRET: secret
       JWT_EXPIRATION_IN_MINUTES: 5
       JWT_ISSUER: Enigma
       REFRESH_TOKEN_EXPIRATION_IN_HOUR: 24
@@ -55,5 +56,4 @@ volumes:
 
 networks:
   job-connector-network:
-    name: job-connector-network
     driver: bridge

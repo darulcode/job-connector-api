@@ -15,7 +15,7 @@ FROM openjdk:17-alpine
 WORKDIR /app
 
 # Copy jar file hasil build ke container runtime
-COPY --from=build /app/target/jobConnector-0.0.1-SNAPSHOT.jar app.jar
+COPY target/jobConnector-0.0.1-SNAPSHOT.jar app.jar
 
 # Jalankan aplikasi
 ENTRYPOINT ["java", "-jar", "app.jar"]
