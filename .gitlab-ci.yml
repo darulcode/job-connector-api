@@ -8,20 +8,16 @@ build:
   stage: build
   image: maven:latest
   tags:
-    - docker # Sesuaikan dengan tag runner Anda
+    - docker
   script:
     - mvn clean package -DskipTests
-  artifacts:
-    paths:
-      - target/jobConnector-0.0.1-SNAPSHOT.jar
-    expire_in: 1 week # File artifact akan disimpan selama 1 minggu
 
 # Tahap Test
 test:
   stage: test
   image: maven:latest
   tags:
-    - docker # Sesuaikan dengan tag runner Anda
+    - docker
   script:
     - mvn test
 
@@ -30,7 +26,7 @@ deploy:
   stage: deploy
   image: alpine:latest
   tags:
-    - docker # Sesuaikan dengan tag runner Anda
+    - docker
   before_script:
     - apk add --no-cache openssh
     - mkdir -p ~/.ssh
@@ -38,9 +34,7 @@ deploy:
     - chmod 600 ~/.ssh/id_rsa
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
   script:
-    # Menyalin file JAR ke server
     - scp target/jobConnector-0.0.1-SNAPSHOT.jar $SSH_USER@$SSH_HOST:/path/to/deploy
-    # Menjalankan docker-compose untuk restart layanan
     - ssh $SSH_USER@$SSH_HOST "cd /path/to/deploy && docker-compose down && docker-compose up -d"
   only:
     - master
