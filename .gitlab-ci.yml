@@ -3,6 +3,8 @@ stages:
 
 deploy:
   stage: deploy
+  tags:
+    - cq
   script:
     - ssh -i $SSH_PRIVATE_KEY $SSH_USER@$SSH_HOST "
       cd $PROJECT_DIR &&
