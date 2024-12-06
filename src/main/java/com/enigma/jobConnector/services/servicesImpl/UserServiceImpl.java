@@ -82,20 +82,21 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USERNAME_NOT_FOUND));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public UserResponse update(String id, UserRequest userRequest) {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
         if (currentUser == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
-        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN) || !currentUser.getId().equals(id)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         User user = getOne(id);
         user.setName(userRequest.getName());
         user.setUsername(userRequest.getUsername());
         user.setEmail(userRequest.getEmail());
-        user.setRole(UserRole.fromDescription(userRequest.getRole()));
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         return getUserResponse(user);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void delete(String id) {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
@@ -104,6 +105,7 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(getOne(id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<UserResponse> findAllUser(UserSearchRequest request) {
         Sort sortBy = ShortUtil.parseSort(request.getSortBy());
@@ -115,12 +117,14 @@ public class UserServiceImpl implements UserService {
         return users.map(this::getUserResponse);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserResponse getUserDetails(String id) {
         User user = getOne(id);
         return getUserResponse(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserResponse getSelfUserDetails() {
         validateCurrentUser();
