@@ -3,8 +3,8 @@ stages:
   - deploy
 
 variables:
-  DOCKER_REGISTRY: "docker.io"
-  DOCKER_IMAGE_NAME: "darulcode72/job-connector-api"
+  DOCKER_REGISTRY: "darulcode72"
+  DOCKER_IMAGE_NAME: "job-connector-api"
   POSTGRES_DB: "enigma_job_connector"
   POSTGRES_USER: "postgres"
   POSTGRES_PASSWORD: "123"
