@@ -20,7 +20,7 @@ variables:
 
 # Build stage
 build:
-  image: maven:3.9.2-openjdk-17
+  image: maven:3.9.4-eclipse-temurin-17
   stage: build
   tags:
     - docker
