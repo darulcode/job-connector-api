@@ -3,38 +3,26 @@ stages:
   - test
   - deploy
 
-# Tahap Build
+before_script:
+  - mkdir -p ~/.ssh
+  - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
 build:
   stage: build
-  image: maven:latest
-  tags:
-    - docker
   script:
-    - mvn clean package -DskipTests
+    - git clone git@git.enigmacamp.com:enigma-camp/offline-class-pascal/pascal-18/final-project/team-1-enigma-job-connector/backend/enigma-job-connector-api.git
+    - cd enigma-job-connector-api
+    - mvn clean install
 
-## Tahap Test
-#test:
-#  stage: test
-#  image: maven:latest
-#  tags:
-#    - docker
-#  script:
-#    - mvn test
+test:
+  stage: test
+  script:
+    - mvn test
 
-# Tahap Deploy
 deploy:
   stage: deploy
-  image: docker:latest
-  tags:
-    - job-connector
-  before_script:
-    - apk add --no-cache openssh
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
   script:
-    - scp target/jobConnector-0.0.1-SNAPSHOT.jar $SSH_USER@$SSH_HOST:/path/to/deploy
-    - ssh $SSH_USER@$SSH_HOST "cd /path/to/deploy && docker-compose down && docker-compose up -d"
-  only:
-    - master
+    - docker build -t job-connector-api .
+    - docker-compose up -d
