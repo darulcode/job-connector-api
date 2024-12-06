@@ -2,8 +2,8 @@ version: "3.8"
 services:
   job-connector-postgres:
     container_name: job-connector-postgres
-    image: postgres:15-alpine
-    restart: unless-stopped
+    image: postgres:alpine
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: bbZvjXpBC1CP0PP
@@ -15,10 +15,8 @@ services:
 
   job-connector-redis:
     container_name: job-connector-redis
-    image: redis:7-alpine
-    restart: unless-stopped
-    ports:
-      - "6379:6379"
+    restart: always
+    image: redis:alpine
     volumes:
       - job-connector-redis-data:/data
     networks:
