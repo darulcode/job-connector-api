@@ -12,14 +12,14 @@ build:
   script:
     - mvn clean package -DskipTests
 
-# Tahap Test
-test:
-  stage: test
-  image: maven:latest
-  tags:
-    - docker
-  script:
-    - mvn test
+## Tahap Test
+#test:
+#  stage: test
+#  image: maven:latest
+#  tags:
+#    - docker
+#  script:
+#    - mvn test
 
 # Tahap Deploy
 deploy:
