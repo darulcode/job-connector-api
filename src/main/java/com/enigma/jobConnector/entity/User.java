@@ -42,6 +42,9 @@ public class User implements UserDetails {
     @Column(name = "role")
     private UserRole role;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_category_id")
+    private UserCategory userCategory;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
