@@ -12,8 +12,11 @@ deploy:
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
     - ssh root@$SSH_HOST "
       cd $PROJECT_DIR &&
+      docker compose down &&
       git pull origin master &&
-      docker-compose up -d
+      ahmaddarul72 &&
+      1Ad4Jm7Tw@# &&
+      docker compose up -d
       "
 
 variables:
