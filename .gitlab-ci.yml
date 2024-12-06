@@ -6,13 +6,15 @@ deploy:
   tags:
     - cq
   script:
-    - ssh -i $SSH_KEY $SSH_USER@$SSH_HOST "
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+    - ssh root@$SSH_HOST "
       cd $PROJECT_DIR &&
       git pull origin master &&
       docker-compose up -d
       "
 variables:
-  SSH_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmT91lbN4j1S5lM3czhsFEzMt1pWfEwJu3O3PVLp3ZctYrAhFWlDXYXCy1KNEDzp9mjXj/pGS/Qz523Cgabeu39NWkr/lVFI8uMOwD4T4eAFWxFYfuxNY4KT8f2D9iU8Fc5wExPpuIy+TqtGCOAlURAYWOcOqpPJ/fU/EaBSg3iphFirLL9DaeEG7aw3lANBbQmUULz3pSZeBFpsDm+aTbnF7Zsv8dAXQZAc4XAwIIG6kLoqxTivtXUR9n8SFUU68GTyQ6mbQElRi2okT9km0BnVSvKJxE0h5zuC87HaAckYqh5DxOjH4ssAfwHD7bYCITS7l0TjMoL8L13YQ+xK3OJdpm+zkGhEKlLJP3Dq9sBcVPFGtvsKdgs5rxmviL3WoDURPiuPj2EO5ywrIxscXw5JWNO2IeGAJtzYvC/ZvK59l+0lsNzUcAzG9dyz6c2gqPv4EZIHaVNU6ph4W/iJekGG7qQQkbkl8s1klXH7Toci4RaDXrsaRDgxHixZhOC/k= enigma@enigma-Latitude-3310"
-  SSH_USER: "root"
   SSH_HOST: "152.42.224.141"
   PROJECT_DIR: "enigma-job-connector-api"
