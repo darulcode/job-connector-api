@@ -16,37 +16,47 @@ variables:
   REDIS_HOST: "job-connector-redis"
   REDIS_PORT: 6379
   POSTGRES_HOST: "job-connector-postgres"
+  DOCKER_IMAGE_TAG: "latest"
 
 before_script:
-  - export DOCKER_BUILDKIT=1
-  - export COMPOSE_DOCKER_CLI_EXPERIMENTAL=enabled
+  - apt-get update -qq && apt-get install -y maven sshpass docker.io
 
+# Build stage
 build:
   stage: build
-  tags:
-    - deploy
   script:
-    - docker compose -f docker-compose.yml build
-  only:
-    - master
-    - develop
+    - mvn clean install -DskipTests
+    - docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME .
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+    - docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
 
+## Test stage (optional, jika Anda memiliki unit test)
 #test:
 #  stage: test
-#  tags:
-#    - Poseidon
 #  script:
-#    - docker-compose -f docker-compose.yml up -d job-connector-postgres job-connector-redis
-#    - docker-compose -f docker-compose.yml exec job-connector-api ./run-tests.sh
-#    - docker-compose -f docker-compose.yml down
-#  only:
-#    - master
+#    - mvn test
 
+# Deploy stage
 deploy:
   stage: deploy
-  tags:
-    - deploy
-  script:
-    - docker compose -f docker-compose.yml up -d
   only:
     - master
+  script:
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY user@your-server-ip "
+      docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY &&
+      docker pull $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME &&
+      docker stop job-connector-api || true &&
+      docker rm job-connector-api || true &&
+      docker run -d --name job-connector-api
+      -e POSTGRES_DB=$POSTGRES_DB
+      -e POSTGRES_USER=$POSTGRES_USER
+      -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      -e JWT_SECRET=$JWT_SECRET
+      -e JWT_EXPIRATION_IN_MINUTES=$JWT_EXPIRATION_IN_MINUTES
+      -e JWT_ISSUER=$JWT_ISSUER
+      -e REFRESH_TOKEN_EXPIRATION_IN_HOUR=$REFRESH_TOKEN_EXPIRATION_IN_HOUR
+      -e REDIS_HOST=$REDIS_HOST
+      -e REDIS_PORT=$REDIS_PORT
+      -e POSTGRES_HOST=$POSTGRES_HOST
+      -p 8080:8080
+      $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME"
