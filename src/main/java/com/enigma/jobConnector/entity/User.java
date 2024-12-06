@@ -42,6 +42,12 @@ public class User implements UserDetails {
     @Column(name = "role")
     private UserRole role;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Test> tests;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<TestDetail> testDetails;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

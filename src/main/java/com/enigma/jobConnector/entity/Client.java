@@ -4,6 +4,8 @@ import com.enigma.jobConnector.constants.Constant;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -19,4 +21,7 @@ public class Client {
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
+    private List<Test> tests;
 }
