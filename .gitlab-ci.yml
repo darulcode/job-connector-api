@@ -7,18 +7,16 @@ deploy:
     - cq
   script:
     - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+    - git config --global credential.helper store
+    - git config --global url."https://$GIT_USERNAME:$GIT_TOKEN@git.enigmacamp.com/".insteadOf "https://git.enigmacamp.com/"
     - ssh root@$SSH_HOST "
       cd $PROJECT_DIR &&
-      docker compose down &&
       git pull origin master &&
-      ahmaddarul72 &&
-      1Ad4Jm7Tw@# &&
-      docker compose up -d
+      docker-compose up -d
       "
-
 variables:
   SSH_HOST: "152.42.224.141"
   PROJECT_DIR: "enigma-job-connector-api"
