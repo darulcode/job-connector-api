@@ -24,7 +24,7 @@ before_script:
 build:
   stage: build
   tags:
-    - Poseidon
+    - deploy
   script:
     - docker-compose -f docker-compose.yml build
   only:
@@ -45,7 +45,7 @@ build:
 deploy:
   stage: deploy
   tags:
-    - Poseidon
+    - deploy
   script:
     - docker-compose -f docker-compose.yml up -d
   only:
