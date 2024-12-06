@@ -31,7 +31,8 @@ deploy:
     - chmod 600 ~/.ssh/id_rsa
     - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
   script:
-    - scp target/jobConnector-0.0.1-SNAPSHOT.jar user@your-server:/path/to/deploy
-    - ssh user@your-server "docker-compose -f /path/to/deploy/docker-compose.yml up -d"
+    - scp target/jobConnector-0.0.1-SNAPSHOT.jar $SSH_USER@$SSH_HOST:/path/to/deploy
+    - ssh $SSH_USER@$SSH_HOST "docker-compose -f /path/to/deploy/docker-compose.yml up -d"
   only:
-    - main
+    - master
+
