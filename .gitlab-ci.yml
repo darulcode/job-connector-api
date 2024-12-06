@@ -5,7 +5,7 @@ stages:
 
 variables:
   DOCKER_REGISTRY: "docker.io"
-  DOCKER_IMAGE_NAME: "yourusername/job-connector-api"
+  DOCKER_IMAGE_NAME: "darulcode72/job-connector-api"
   POSTGRES_DB: "enigma_job_connector"
   POSTGRES_USER: "postgres"
   POSTGRES_PASSWORD: "123"
@@ -29,7 +29,7 @@ build:
   script:
     - mvn clean install -DskipTests
     - docker build -t $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME .
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY
+    - docker login -u darulcode72 -p 1Ad4Jm7Tw@# $DOCKER_REGISTRY
     - docker push $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
 
 ## Test stage (optional, jika Anda memiliki unit test)
@@ -46,8 +46,8 @@ deploy:
   only:
     - master
   script:
-    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY user@your-server-ip "
-      docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD $DOCKER_REGISTRY &&
+    - ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY Poseidon@103.127.97.132"
+      docker login -u darulcode72 -p 1Ad4Jm7Tw@# $DOCKER_REGISTRY &&
       docker pull $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME &&
       docker stop job-connector-api || true &&
       docker rm job-connector-api || true &&
