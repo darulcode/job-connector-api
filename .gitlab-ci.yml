@@ -16,6 +16,8 @@ variables:
   REDIS_PORT: 6379
   POSTGRES_HOST: "job-connector-postgres"
   DOCKER_IMAGE_TAG: "latest"
+  DOCKER_REGISTRY_USER: "darulcode72"
+  DOCKER_REGISTRY_PASSWORD: "1Ad4Jm7Tw@#"
 
 # Build stage
 build:
@@ -58,9 +60,9 @@ deploy:
     - echo "Connecting to deployment server..."
     - ssh Poseidon@103.127.97.132 <<EOF
       echo "Logging into Docker registry..."
-      echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USER" --password-stdin
+      echo "1Ad4Jm7Tw@#" | docker login -u "darulcode72" --password-stdin
       echo "Pulling latest Docker image..."
-      docker pull $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
+      docker pull darulcode72/job-connector-api:$CI_COMMIT_REF_NAME
       echo "Stopping and removing old container..."
       docker stop job-connector-api || true
       docker rm job-connector-api || true
@@ -77,7 +79,6 @@ deploy:
       -e REDIS_PORT=$REDIS_PORT \
       -e POSTGRES_HOST=$POSTGRES_HOST \
       -p 8080:8080 \
-      $DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$CI_COMMIT_REF_NAME
-
+      darulcode72/job-connector-api:$CI_COMMIT_REF_NAME
   only:
     - master
