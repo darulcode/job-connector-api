@@ -1,32 +1,22 @@
 stages:
   - deploy
 
+variables:
+  VPS_SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY
+  SERVER_IP: "152.42.224.141"
+  SERVER_USER: "root"
+
 deploy:
   stage: deploy
   tags:
     - cq
   script:
-    # Persiapkan file SSH
-    - mkdir -p ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-
-    # Mengatur git untuk menggunakan SSH, tanpa kredensial yang masked
-    - git config --global --unset credential.helper  # Hapus pengaturan credential
-    - git config --global url."git@git.enigmacamp.com:".insteadOf "https://git.enigmacamp.com/"
-
-    # SSH ke VPS dan menjalankan perintah
-    - |
-      ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "
-        cd $PROJECT_DIR &&
-        git pull origin master &&
-        docker compose down &&
-        docker compose up -d
-      "
-
-variables:
-  SSH_HOST: "152.42.224.141"
-  SSH_USER: "root"  # Ganti dengan username yang benar jika bukan root
-  PROJECT_DIR: "enigma-job-connector-api"
-  SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY
+    - echo "Pulling latest changes from origin master..."
+    - ssh -i <(echo "$VPS_SSH_PRIVATE_KEY") $SERVER_USER@$SERVER_IP << 'EOF'
+      cd enigma-job-connector-api
+      git pull origin master
+      docker compose down
+      docker compose up -d
+      EOF
+  only:
+    - master
