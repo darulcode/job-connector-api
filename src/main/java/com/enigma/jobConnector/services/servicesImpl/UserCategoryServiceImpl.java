@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -30,6 +31,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
 
     private final UserCategoryRepository userCategoryRepository;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public UserCategoryResponse createUserCategory(UserCategoryRequest userCategoryRequest) {
         AuthenticationContextUtil.validateCurrentUserRoleSuperAdmin();
@@ -44,6 +46,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
         return getUserCategoryResponse(userCategory);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public UserCategoryResponse updateUserCategory(String id, UserCategoryRequest userCategoryRequest) {
         AuthenticationContextUtil.validateCurrentUserRoleSuperAdmin();
@@ -75,6 +78,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
     }
 
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void delete(String id) {
         AuthenticationContextUtil.validateCurrentUserRoleSuperAdmin();
@@ -84,7 +88,7 @@ public class UserCategoryServiceImpl implements UserCategoryService {
     @Override
     public UserCategory getByName(String name) {
         Optional<UserCategory> userCategory = userCategoryRepository.findByName(name);
-        return userCategory.isPresent() ? userCategory.get() : null;
+        return userCategory.orElse(null);
     }
 
 
