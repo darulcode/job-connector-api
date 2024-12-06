@@ -68,17 +68,20 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.delete(client.get());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Client getOne(String id) {
         return clientRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.CLIENT_NOT_FOUND, null));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ClientResponse getClientDetail(String id) {
         validateCurrentUser();
         return getClientResponse(getOne(id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<ClientResponse> getAllClients(ClientSearchRequest request) {
         validateCurrentUser();
