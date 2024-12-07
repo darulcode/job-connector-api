@@ -24,6 +24,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,39 +43,43 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
 
         try (InputStream inputStream = file.getInputStream()) {
             Workbook workbook = WorkbookFactory.create(inputStream);
-            Sheet sheet = workbook.getSheetAt(0);
+            Integer sheetCount = workbook.getNumberOfSheets();
 
             List<User> users = new ArrayList<>();
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
 
-                String name = row.getCell(0).getStringCellValue();
-                String email = row.getCell(1).getStringCellValue();
-                String username = row.getCell(2).getStringCellValue();
-                String password = passwordEncoder.encode(row.getCell(3).getStringCellValue());
-                UserRole role = UserRole.fromDescription(row.getCell(4).getStringCellValue());
+            for (int sheetIndex = 0; sheetIndex < sheetCount; sheetIndex++) {
+                Sheet sheet = workbook.getSheetAt(sheetIndex);
 
-                String categoryName = row.getCell(5).getStringCellValue();
-                UserCategory userCategory = userCategoryService.getByName(categoryName);
-                if (userCategory == null) {
-                    userCategoryService.createUserCategory(UserCategoryRequest.builder().name(categoryName).build());
-                    userCategory = userCategoryService.getByName(categoryName);
+                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                    Row row = sheet.getRow(i);
+                    if (row == null) continue;
+
+                    String name = row.getCell(0).getStringCellValue();
+                    String email = row.getCell(1).getStringCellValue();
+                    String username = row.getCell(2).getStringCellValue();
+                    String password = passwordEncoder.encode(row.getCell(3).getStringCellValue());
+                    UserRole role = UserRole.fromDescription(row.getCell(4).getStringCellValue());
+
+                    String categoryName = row.getCell(5).getStringCellValue();
+                    UserCategory userCategory = userCategoryService.getByName(categoryName);
+                    if (userCategory == null) {
+                        userCategoryService.createUserCategory(UserCategoryRequest.builder().name(categoryName).build());
+                        userCategory = userCategoryService.getByName(categoryName);
+                    }
+
+                    User user = User.builder()
+                            .name(name)
+                            .email(email)
+                            .username(username)
+                            .password(password)
+                            .role(role)
+                            .userCategory(userCategory)
+                            .build();
+
+                    users.add(user);
                 }
-
-                User user = User.builder()
-                        .name(name)
-                        .email(email)
-                        .username(username)
-                        .password(password)
-                        .role(role)
-                        .userCategory(userCategory)
-                        .build();
-
-                users.add(user);
             }
-
             userService.batchCreate(users);
-
         } catch (Exception e) {
             throw new RuntimeException(Constant.FAILED_PROCESS_EXCEL_FILE, e);
         }
@@ -82,40 +88,47 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
     @Override
     public void exportExcelUserData(HttpServletResponse response) {
         try {
-            List<User> users = userService.findAll();
-
             Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("Users");
 
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("id");
-            headerRow.createCell(1).setCellValue("name");
-            headerRow.createCell(2).setCellValue("email");
-            headerRow.createCell(3).setCellValue("username");
-            headerRow.createCell(4).setCellValue("role");
-            headerRow.createCell(5).setCellValue("user_category");
+            Map<String, List<User>> usersGroupedByUserCategory = userService.findAll()
+                    .stream()
+                    .collect(Collectors.groupingBy(user ->
+                            user.getUserCategory() != null ? user.getUserCategory().getName() : "Karyawan"));
 
-            int rowIndex = 1;
-            for (User user : users) {
-                if (user.getRole() == UserRole.ROLE_SUPER_ADMIN) {
-                    continue;
-                }
-                Row row = sheet.createRow(rowIndex++);
-                row.createCell(0).setCellValue(user.getId());
-                row.createCell(1).setCellValue(user.getName());
-                row.createCell(2).setCellValue(user.getEmail());
-                row.createCell(3).setCellValue(user.getUsername());
-                row.createCell(4).setCellValue(user.getRole().getDescription());
+            for (Map.Entry<String, List<User>> entry : usersGroupedByUserCategory.entrySet()) {
+                Sheet sheet = workbook.createSheet(entry.getKey());
+                List<User> users = entry.getValue();
 
-                if (user.getUserCategory() != null) {
-                    row.createCell(5).setCellValue(user.getUserCategory().getName());
-                } else {
-                    row.createCell(5).setCellValue("");
+                Row headerRow = sheet.createRow(0);
+                headerRow.createCell(0).setCellValue("id");
+                headerRow.createCell(1).setCellValue("name");
+                headerRow.createCell(2).setCellValue("email");
+                headerRow.createCell(3).setCellValue("username");
+                headerRow.createCell(4).setCellValue("role");
+                headerRow.createCell(5).setCellValue("user_category");
+
+                int rowIndex = 1;
+                for (User user : users) {
+                    if (user.getRole() == UserRole.ROLE_SUPER_ADMIN) {
+                        continue;
+                    }
+                    Row row = sheet.createRow(rowIndex++);
+                    row.createCell(0).setCellValue(user.getId());
+                    row.createCell(1).setCellValue(user.getName());
+                    row.createCell(2).setCellValue(user.getEmail());
+                    row.createCell(3).setCellValue(user.getUsername());
+                    row.createCell(4).setCellValue(user.getRole().getDescription());
+
+                    if (user.getUserCategory() != null) {
+                        row.createCell(5).setCellValue(user.getUserCategory().getName());
+                    } else {
+                        row.createCell(5).setCellValue("");
+                    }
                 }
             }
 
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setHeader("Content-Disposition", "attachment; filename=persons.xlsx");
+            response.setHeader("Content-Disposition", "attachment; filename=data-users.xlsx");
 
             workbook.write(response.getOutputStream());
             workbook.close();
