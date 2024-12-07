@@ -11,11 +11,11 @@ publish:
   stage: publish
   services:
     - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   script:
-    - docker build -t $TAG_COMMIT -t $TAG_LATEST .
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker push $TAG_COMMIT
-    - docker push $TAG_LATEST
+    - docker build -t $CI_REGISTRY_USER/$CI_REGISTRY_IMAGE:$TAG_COMMIT .
+    - docker push $CI_REGISTRY_USER/$CI_REGISTRY_IMAGE:$TAG_COMMIT
 
 deploy:
   image: alpine:latest
