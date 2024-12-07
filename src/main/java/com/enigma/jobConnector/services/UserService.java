@@ -7,6 +7,8 @@ import com.enigma.jobConnector.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.List;
+
 public interface UserService extends UserDetailsService {
 
     User getOne(String id);
@@ -15,6 +17,8 @@ public interface UserService extends UserDetailsService {
     UserResponse update(String id, UserRequest userRequest);
     void delete(String id);
     Page<UserResponse> findAllUser(UserSearchRequest userSearchRequest);
+    void batchCreate(List<User> users);
+    List<User> findAll();
     UserResponse getUserDetails(String id);
     UserResponse getSelfUserDetails();
 }

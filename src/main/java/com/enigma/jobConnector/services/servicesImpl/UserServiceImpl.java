@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.enigma.jobConnector.utils.AuthenticationContextUtil.validateCurrentUser;
@@ -125,6 +126,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional(readOnly = true)
+    @Override
+    public void batchCreate(List<User> users) {
+        userRepository.saveAll(users);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
     @Override
     public UserResponse getUserDetails(String id) {
         User user = getOne(id);
