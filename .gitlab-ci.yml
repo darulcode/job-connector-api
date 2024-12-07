@@ -15,9 +15,9 @@ deploy:
     - chmod 600 /home/gitlab-runner/.ssh/id_rsa
     - eval "$(ssh-agent -s)"
     - ssh-add /home/gitlab-runner/.ssh/id_rsa
-    - ssh -i /home/gitlab-runner/.ssh/id_rsa -o StrictHostKeyChecking=no root@152.42.224.141 "cd enigma-job-connector-api && git pull origin master"
-    - ssh -i /home/gitlab-runner/.ssh/id_rsa -o StrictHostKeyChecking=no root@152.42.224.141 "cd enigma-job-connector-api && docker compose down"
-    - ssh -i /home/gitlab-runner/.ssh/id_rsa -o StrictHostKeyChecking=no root@152.42.224.141 "cd enigma-job-connector-api && docker compose up -d"
+    - ssh -i /home/gitlab-runner/.ssh/id_rsa -o StrictHostKeyChecking=no root@$SERVER_IP "cd enigma-job-connector-api && git pull origin master"
+    - ssh -i /home/gitlab-runner/.ssh/id_rsa -o StrictHostKeyChecking=no root@$SERVER_IP "cd enigma-job-connector-api && docker compose down"
+    - ssh -i /home/gitlab-runner/.ssh/id_rsa -o StrictHostKeyChecking=no root@$SERVER_IP "cd enigma-job-connector-api && docker compose up -d"
 
   only:
     - master
