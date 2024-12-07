@@ -125,12 +125,13 @@ public class UserServiceImpl implements UserService {
         return users.map(this::getUserResponse);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void batchCreate(List<User> users) {
         userRepository.saveAll(users);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
