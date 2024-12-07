@@ -2,7 +2,6 @@ stages:
   - deploy
 
 variables:
-  GITLAB_USER: "ahmaddarul72"
   GITLAB_SSH_PRIVATE_KEY: $SSH_PRIVATE_KEY
 
 deploy:
@@ -10,14 +9,14 @@ deploy:
   tags:
     - deployment
   script:
-    - mkdir -p /home/gitlab-runner/.ssh
-    - echo "$GITLAB_SSH_PRIVATE_KEY" > /home/gitlab-runner/.ssh/id_rsa
-    - chmod 600 /home/gitlab-runner/.ssh/id_rsa
+    - mkdir -p ~/.ssh
+    - echo "$GITLAB_SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
     - eval "$(ssh-agent -s)"
-    - ssh-add /home/gitlab-runner/.ssh/id_rsa
-    - ssh -i /home/gitlab-runner/.ssh/id_rsa -o StrictHostKeyChecking=no root@$SERVER_IP "cd enigma-job-connector-api && git pull origin master"
-    - ssh -i /home/gitlab-runner/.ssh/id_rsa -o StrictHostKeyChecking=no root@$SERVER_IP "cd enigma-job-connector-api && docker compose down"
-    - ssh -i /home/gitlab-runner/.ssh/id_rsa -o StrictHostKeyChecking=no root@$SERVER_IP "cd enigma-job-connector-api && docker compose up -d"
+    - ssh-add ~/.ssh/id_rsa
+    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP "cd enigma-job-connector-api && git pull origin master"
+    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP "cd enigma-job-connector-api && docker compose down"
+    - ssh -o StrictHostKeyChecking=no root@$SERVER_IP "cd enigma-job-connector-api && docker compose up -d"
 
   only:
     - master
