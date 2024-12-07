@@ -1,6 +1,7 @@
 package com.enigma.jobConnector.utils;
 
 import com.enigma.jobConnector.constants.Constant;
+import com.enigma.jobConnector.constants.UserRole;
 import com.enigma.jobConnector.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,5 +26,16 @@ public class AuthenticationContextUtil {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         }
     }
+
+    public static void validateCurrentUserRoleSuperAdmin() {
+        User currentUser = AuthenticationContextUtil.getCurrentUser();
+        if (currentUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        }
+        if (!UserRole.ROLE_SUPER_ADMIN.equals(currentUser.getRole())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        }
+    }
+
 }
 

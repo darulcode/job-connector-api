@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ClientResponse createClient(ClientRequest clientRequest) {
         validateCurrentUserRole();
@@ -45,6 +47,7 @@ public class ClientServiceImpl implements ClientService {
         return getClientResponse(client);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ClientResponse updateClient(String id,ClientRequest clientRequest) {
         validateCurrentUserRole();
@@ -54,6 +57,7 @@ public class ClientServiceImpl implements ClientService {
         return getClientResponse(client);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteClient(String id) {
         validateCurrentUserRole();
@@ -64,17 +68,20 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.delete(client.get());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Client getOne(String id) {
         return clientRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.CLIENT_NOT_FOUND, null));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ClientResponse getClientDetail(String id) {
         validateCurrentUser();
         return getClientResponse(getOne(id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<ClientResponse> getAllClients(ClientSearchRequest request) {
         validateCurrentUser();

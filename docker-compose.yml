@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  job-connector-postgres:
+    container_name: job-connector-postgres
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: enigma_job_connector
+    volumes:
+      - job-connector-postgres-data:/var/lib/postgresql/data
+    networks:
+      - job-connector-network
+
+  job-connector-redis:
+    container_name: job-connector-redis
+    image: redis:alpine
+    restart: always
+    volumes:
+      - job-connector-redis-data:/data
+    networks:
+      - job-connector-network
+
+  job-connector-api:
+    container_name: job-connector-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      HOST_NAME: job-connector-postgres
+      POSTGRES_DB: enigma_job_connector
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      JWT_SECRET: secret
+      JWT_EXPIRATION_IN_MINUTES: 5
+      JWT_ISSUER: Enigma
+      REFRESH_TOKEN_EXPIRATION_IN_HOUR: 24
+      REDIS_HOST: job-connector-redis
+      REDIS_PORT: 6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      - job-connector-postgres
+      - job-connector-redis
+    networks:
+      - job-connector-network
+
+volumes:
+  job-connector-postgres-data:
+    name: job-connector-postgres-data
+  job-connector-redis-data:
+    name: job-connector-redis-data
+
+networks:
+  job-connector-network:
+    driver: bridge
