@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,13 +58,9 @@ public class UserCategoryServiceImpl implements UserCategoryService {
     }
 
     @Override
-    public Page<UserCategoryResponse> getAllUserCategories(UserCategorySearchRequest request) {
-        Sort sortBy = ShortUtil.parseSort(request.getSortBy());
-        if (request.getPage() <= 0) request.setPage(1);
-        Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), sortBy);
-        Specification<UserCategory> specification = UserCategorySpecification.getSpecification(request);
-        Page<UserCategory> response = userCategoryRepository.findAll(specification, pageable);
-        return response.map(this::getUserCategoryResponse);
+    public List<UserCategoryResponse> getAllUserCategories() {
+        List<UserCategory> response = userCategoryRepository.findAll();
+        return response.stream().map(this::getUserCategoryResponse).toList();
     }
 
     @Override

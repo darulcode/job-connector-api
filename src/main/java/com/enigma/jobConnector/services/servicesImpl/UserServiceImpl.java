@@ -6,9 +6,11 @@ import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
 import com.enigma.jobConnector.dto.response.UserResponse;
 import com.enigma.jobConnector.entity.User;
+import com.enigma.jobConnector.entity.UserCategory;
 import com.enigma.jobConnector.repository.UserRepository;
+import com.enigma.jobConnector.services.UserCategoryService;
 import com.enigma.jobConnector.services.UserService;
-import com.enigma.jobConnector.spesification.UserSpecification;
+import com.enigma.jobConnector.specification.UserSpecification;
 import com.enigma.jobConnector.utils.AuthenticationContextUtil;
 import com.enigma.jobConnector.utils.ShortUtil;
 import jakarta.annotation.PostConstruct;
@@ -38,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserCategoryService userCategoryService;
 
     @PostConstruct
     public void init(){
@@ -56,25 +59,29 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public UserResponse create(UserRequest userRequest) {
-        User currentUser = AuthenticationContextUtil.getCurrentUser();
-        log.info("Creating user {}", userRequest.getUsername());
-        if (currentUser == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
-        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN) ) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        AuthenticationContextUtil.validateCurrentUserRoleSuperAdmin();
+
+        UserCategory userCategory = null;
+        if (userRequest.getCategoryId() != null && !userRequest.getCategoryId().isEmpty()) {
+            userCategory = userCategoryService.getOne(userRequest.getCategoryId());
+        }
 
         Optional<User> userResult = userRepository.findByEmailOrUsername(userRequest.getEmail(), userRequest.getUsername());
-        // TODO: username my be generate by name user
-        if (userResult.isPresent()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USERNAME_OR_EMAIL_ALREADY_EXIST);
+        if (userResult.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USERNAME_OR_EMAIL_ALREADY_EXIST);
+        }
         User user = User.builder()
                 .name(userRequest.getName())
                 .email(userRequest.getEmail())
                 .username(userRequest.getUsername())
+                .userCategory(userCategory)
                 .role(UserRole.fromDescription(userRequest.getRole()))
                 .password(passwordEncoder.encode(userRequest.getPassword()))
                 .build();
         userRepository.saveAndFlush(user);
         return getUserResponse(user);
-
     }
+
 
     @Override
     public User findByUsername(String username) {
@@ -143,15 +150,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserResponse getUserResponse(User user) {
+        String category = Optional.ofNullable(user.getUserCategory())
+                .map(UserCategory::getName)
+                .orElse(null);
         return UserResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .username(user.getUsername())
+                .category(category)
                 .email(user.getEmail())
                 .role(user.getRole().getDescription())
                 .build();
     }
-
-
 
 }

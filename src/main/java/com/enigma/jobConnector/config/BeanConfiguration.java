@@ -21,9 +21,4 @@ public class BeanConfiguration {
         return configuration.getAuthenticationManager();
     }
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
-
 }

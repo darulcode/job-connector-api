@@ -37,5 +37,26 @@ public class AuthenticationContextUtil {
         }
     }
 
+    public static User validateCurrentUserRoleAdmin() {
+        User currentUser = AuthenticationContextUtil.getCurrentUser();
+        if (currentUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        }
+        if (!UserRole.ROLE_ADMIN.equals(currentUser.getRole())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        }
+        return currentUser;
+    }
+
+    public static User validateCurrentUserNOTRoleUser() {
+        User currentUser = AuthenticationContextUtil.getCurrentUser();
+        if (currentUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        }
+        if (!UserRole.ROLE_ADMIN.equals(currentUser.getRole()) && !UserRole.ROLE_USER.equals(currentUser.getRole())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        }
+        return currentUser;
+    }
 }
 

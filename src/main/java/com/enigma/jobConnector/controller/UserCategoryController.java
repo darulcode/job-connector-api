@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(Constant.USER_CATEGORY_API)
@@ -34,20 +36,9 @@ public class UserCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllUserCategory(
-            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
-            @RequestParam(name = "sortBy", required = false) String sortBy,
-            @RequestParam(name = "name", required = false) String query
-    ) {
-        UserCategorySearchRequest searchRequest = UserCategorySearchRequest.builder()
-                .query(query)
-                .page(page)
-                .size(size)
-                .sortBy(sortBy)
-                .build();
-        Page<UserCategoryResponse> response = userCategoryService.getAllUserCategories(searchRequest);
-        return ResponseUtil.buildResponsePage(HttpStatus.OK, Constant.SUCCESS_FETCHING_ALL_USER_CATEGORY, response);
+    public ResponseEntity<?> getAllUserCategory() {
+        List<UserCategoryResponse> response = userCategoryService.getAllUserCategories();
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_FETCHING_ALL_USER_CATEGORY, response);
     }
 
     @GetMapping("/{id}")
