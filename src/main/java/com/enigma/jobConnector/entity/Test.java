@@ -4,13 +4,11 @@ import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.TestStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.LifecycleState;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -24,7 +22,7 @@ public class Test {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -45,7 +43,7 @@ public class Test {
     private TestStatus status;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_test_id", nullable = false)
+    @JoinColumn(name = "file_test_id")
     private FileTest fileTest;
 
     @ManyToOne(fetch = FetchType.LAZY)

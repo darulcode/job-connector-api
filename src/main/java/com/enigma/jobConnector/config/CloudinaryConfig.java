@@ -17,7 +17,7 @@ public class CloudinaryConfig {
     private String CLOUDINARY_NAME;
     @Value("${cloudinary.api_key}")
     private String CLOUDINARY_API_KEY;
-    @Value("${cloudinary.secret_ky}")
+    @Value("${cloudinary.secret_key}")
     private String CLOUDINARY_SECRET_KEY;
 
     @Bean

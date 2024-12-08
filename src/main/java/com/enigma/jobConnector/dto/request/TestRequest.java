@@ -3,6 +3,7 @@ package com.enigma.jobConnector.dto.request;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,5 +15,6 @@ public class TestRequest {
     private String clientId;
     private String description;
     private String status;
+    private List<TestDetailRequest> details;
 
 }
