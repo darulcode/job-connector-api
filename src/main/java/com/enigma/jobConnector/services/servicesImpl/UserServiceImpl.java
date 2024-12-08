@@ -150,9 +150,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserResponse getUserResponse(User user) {
-        String category = Optional.ofNullable(user.getUserCategory())
-                .map(UserCategory::getName)
-                .orElse(null);
+        String category = null;
+        if (user.getUserCategory() !=  null){
+            category = user.getUserCategory().getName();
+        }
         return UserResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
