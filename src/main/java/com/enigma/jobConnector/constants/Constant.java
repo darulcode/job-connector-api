@@ -20,8 +20,9 @@ public class Constant {
     public static final String USER_CATEGORY_API = "/api/user/category";
 
     public static final String CLIENT_API = "/api/client";
-
-
+    public static final String TEST_API = "/api/test";
+    public static final String TEST_DETAIL_API = "/api/test/detail";
+    public static final String FILE_API = "/api/file";
 
     public static final String OK = "OK";
     public static final String SUCCESS_LOGIN_MESSAGE="Successfully logged in";
