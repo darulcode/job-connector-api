@@ -38,12 +38,15 @@ public class Constant {
     public static final String SUCCESS_FETCHING_USER_CATEGORY="Successfully fetch user category";
     public static final String SUCCESS_DELETE_USER_CATEGORY = "Successfully deleted user category";
 
+    public static final String SUCCESS_CREATE_TEST_MESSAGE = "Successfully created test";
     public static final String SUCCESS_FETCH_ALL_CLIENT = "Successfully fetching all clients";
     public static final String SUCCESS_FETCH_CLIENT = "Successfully fetching client";
     public static final String SUCCESS_CREATED_CLIENT = "Successfully created client";
     public static final String SUCCESS_UPDATE_CLIENT = "Successfully updated client";
     public static final String SUCCESS_DELETE_CLIENT = "Successfully deleted client";
-
+    public static final String SUCCESS_FETCHING_ALL_TEST = "Successfully fetching all test";
+    public static final String SUCCESS_DELETE_TEST = "Successfully deleted test";
+    public static final String SUCCESS_FETHING_TEST_DETAILS = "Successfully fething all test details";
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
     public static final String TOKEN_INVALID="Token invalid";
@@ -60,4 +63,9 @@ public class Constant {
     public static final String REFRESH_TOKEN_REQUIRED_MESSAGE="Refresh Token is required";
     public static final String CLIENT_ALREADY_EXIST = "Client already exist";
     public static final String CLIENT_NOT_FOUND = "Client not found";
+    public static final String TEST_NOT_FOUND = "Test not found";
+
+    public static final String INVALID_EXCEL_FILE = "Please upload a valid excel file";
+    public static final String SUCCESS_IMPORT_USER = "Data has been successfully imported";
+    public static final String FAILED_PROCESS_EXCEL_FILE = "Failed to process excel file";
 }
