@@ -1,4 +1,4 @@
-package com.enigma.jobConnector.spesification;
+package com.enigma.jobConnector.specification;
 
 import com.enigma.jobConnector.dto.request.UserCategorySearchRequest;
 import com.enigma.jobConnector.entity.UserCategory;
