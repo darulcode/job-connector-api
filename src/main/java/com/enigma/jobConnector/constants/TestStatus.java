@@ -6,7 +6,9 @@ import lombok.Getter;
 public enum TestStatus {
     PENDING("Pending"),
     FINISH("Finish"),
-    CANCEL("Cancel");
+    SUBMITTED("Submitted"), // submit tapi belum deadline
+    AWAITING("Awaiting"), // sudah deadline
+    CANCEL("Cancel"); // tidak jadi sama sekali dari client
 
     private String description;
 
