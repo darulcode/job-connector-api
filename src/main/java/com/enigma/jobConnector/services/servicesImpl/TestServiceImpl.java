@@ -82,6 +82,7 @@ public class TestServiceImpl implements TestService {
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), sortBy);
         Specification<Test> specification = TestSpecification.getSpecification(request);
         Page<Test> response = testRepository.findAll(specification, pageable);
+
         return response.map(this::getTestResponse);
     }
 
@@ -92,12 +93,15 @@ public class TestServiceImpl implements TestService {
     }
 
     private TestResponse getTestResponse(Test test) {
+        log.info("Memasuki get test response");
         List<TestDetailResponse> testDetailResponses = testDetailService.findByTestId(test.getId());
+        log.info("Memasuki get test detail response : {}", testDetailResponses);
         FileTestResponse fileTestResponse = new FileTestResponse(null, null);
         if (test.getFileTest() != null) {
             fileTestResponse.setUrlFIle("/api/file/"+ test.getFileTest().getFile().getId());
             fileTestResponse.setFileName(test.getFileTest().getFile().getName());
         }
+
         return TestResponse.builder()
                 .id(test.getId())
                 .createdAt(test.getCreatedAt().toString())

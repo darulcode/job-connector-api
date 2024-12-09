@@ -9,6 +9,8 @@ import com.enigma.jobConnector.services.TestService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class TestController {
 
+    private static final Logger log = LoggerFactory.getLogger(TestController.class);
     private final TestService testService;
     private final ObjectMapper objectMapper;
 
@@ -47,6 +50,7 @@ public class TestController {
             @RequestParam(name = "status", required = false) String status,
             @RequestParam(name = "client", required = false) String client
     ) {
+        log.info("Masuk ke test search request");
         TestSearchRequest request = TestSearchRequest.builder()
                 .query(query)
                 .sortBy(sortBy)

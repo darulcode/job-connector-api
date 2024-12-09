@@ -18,7 +18,7 @@ public class FileSubmissionTest {
     private String id;
 
     @OneToOne
-    @JoinColumn(name = "test_id", nullable = false)
+    @JoinColumn(name = "test_id")
     private Test test;
 
     @OneToOne

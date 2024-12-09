@@ -5,6 +5,7 @@ import com.enigma.jobConnector.constants.UserRole;
 import com.enigma.jobConnector.dto.request.ChangePasswordRequest;
 import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
+import com.enigma.jobConnector.dto.response.UserCategoryResponse;
 import com.enigma.jobConnector.dto.response.UserResponse;
 import com.enigma.jobConnector.entity.User;
 import com.enigma.jobConnector.entity.UserCategory;
@@ -164,9 +165,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserResponse getUserResponse(User user) {
-        String category = null;
+        UserCategoryResponse category = null;
         if (user.getUserCategory() !=  null){
-            category = user.getUserCategory().getName();
+            UserCategory userCategoryResult = user.getUserCategory();
+            category = UserCategoryResponse.builder()
+                    .id(userCategoryResult.getId())
+                    .name(userCategoryResult.getName())
+                    .build();
         }
         return UserResponse.builder()
                 .id(user.getId())

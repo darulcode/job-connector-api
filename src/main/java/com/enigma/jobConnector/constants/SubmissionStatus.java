@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum SubmissionStatus {
     PENDING("Pending"),
     REJECT("Reject"),
+    SUBMITTED("Submitted"),
     ACCEPT("Accept");
 
     private String description;
