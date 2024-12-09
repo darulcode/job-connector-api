@@ -3,6 +3,7 @@ package com.enigma.jobConnector.entity;
 
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.UserRole;
+import com.enigma.jobConnector.constants.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,6 +42,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private UserStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_category_id")

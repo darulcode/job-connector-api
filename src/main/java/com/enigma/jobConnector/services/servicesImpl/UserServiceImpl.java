@@ -2,6 +2,7 @@ package com.enigma.jobConnector.services.servicesImpl;
 
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.UserRole;
+import com.enigma.jobConnector.constants.UserStatus;
 import com.enigma.jobConnector.dto.request.ChangePasswordRequest;
 import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
@@ -69,6 +70,7 @@ public class UserServiceImpl implements UserService {
                 .username(userRequest.getUsername())
                 .role(UserRole.fromDescription(userRequest.getRole()))
                 .password(passwordEncoder.encode(userRequest.getPassword()))
+                .status(UserStatus.AKTIVE)
                 .build();
         userRepository.saveAndFlush(user);
         return getUserResponse(user);
@@ -101,7 +103,9 @@ public class UserServiceImpl implements UserService {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
         if (currentUser == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN) ) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
-        userRepository.delete(getOne(id));
+        User user = getOne(id);
+        user.setStatus(UserStatus.INACTIVE);
+        userRepository.saveAndFlush(user);
     }
 
     @Transactional(readOnly = true)
