@@ -68,6 +68,7 @@ public class Constant {
     public static final String CLIENT_NOT_FOUND = "Client not found";
     public static final String STATUS_SUBMISSION_NOT_FOUND = "status submission not found";
     public static final String PASSWORD_SAME = "Cant use latest password";
+    public static final String TEST_DETAIL_NOT_FOUND = "Test detail not found";
 
     public static final String TEST_NOT_FOUND = "Test not found";
 
