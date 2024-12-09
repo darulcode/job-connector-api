@@ -1,5 +1,6 @@
 package com.enigma.jobConnector.specification;
 
+import com.enigma.jobConnector.constants.UserStatus;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
 import com.enigma.jobConnector.entity.User;
 import jakarta.persistence.criteria.Predicate;
@@ -21,6 +22,8 @@ public class UserSpecification {
                 Predicate queryPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + request.getQuery() + "%");
                 predicates.add(queryPredicate);
             }
+                predicates.add(criteriaBuilder.equal(root.get("status"), UserStatus.AKTIVE));
+
             predicates.add(criteriaBuilder.notEqual(root.get("role"), "ROLE_SUPER_ADMIN"));
             return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
         };
