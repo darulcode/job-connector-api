@@ -19,7 +19,7 @@ public class UserCategory {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "userCategory", fetch = FetchType.LAZY)
