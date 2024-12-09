@@ -24,8 +24,6 @@ public class Constant {
     public static final String TEST_DETAIL_API = "/api/test/detail";
     public static final String FILE_API = "/api/file";
 
-
-
     public static final String OK = "OK";
     public static final String SUCCESS_LOGIN_MESSAGE="Successfully logged in";
 
@@ -48,11 +46,7 @@ public class Constant {
     public static final String SUCCESS_DELETE_CLIENT = "Successfully deleted client";
     public static final String SUCCESS_FETCHING_ALL_TEST = "Successfully fetching all test";
     public static final String SUCCESS_DELETE_TEST = "Successfully deleted test";
-    public static final String SUCCESS_FETCHING_TEST_DETAILS = "Successfully fetching all test details";
-    public static final String SUCCESS_CHANGE_PASSWORD = "Successfully change password";
-    public static final String SUCCESS_SUBMITTED_SUBMISSION = "Successfully submitted submission";
-    public static final String SUCCESS_CHANGE_STATUS_SUBMISSION = "Successfully change status submission";
-
+    public static final String SUCCESS_FETHING_TEST_DETAILS = "Successfully fething all test details";
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
     public static final String TOKEN_INVALID="Token invalid";
@@ -69,7 +63,13 @@ public class Constant {
     public static final String REFRESH_TOKEN_REQUIRED_MESSAGE="Refresh Token is required";
     public static final String CLIENT_ALREADY_EXIST = "Client already exist";
     public static final String CLIENT_NOT_FOUND = "Client not found";
+
     public static final String TEST_NOT_FOUND = "Test not found";
-    public static final String PASSWORD_SAME = "Can use your latest password";
-    public static final String STATUS_SUBMISSION_NOT_FOUND = "Submission Status Not Found";
+
+    public static final String INVALID_EXCEL_FILE = "Please upload a valid excel file";
+    public static final String SUCCESS_IMPORT_USER = "Success import %d users and failed import %d users";
+    public static final String FAILED_PROCESS_EXCEL_FILE = "Failed to process excel file";
+    public static final String FAILED_IMPORT_USER_USERNAME_AND_EMAIL_ALREADY_EXIST = "Failed import user: username %s and email %s already exist.";
+    public static final String FAILED_IMPORT_USER_USERNAME_ALREADY_EXIST = "Failed import user: username %s already exist.";
+    public static final String FAILED_IMPORT_USER_EMAIL_ALREADY_EXIST = "Failed import user: email %s already exist.";
 }
