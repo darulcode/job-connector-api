@@ -25,7 +25,7 @@ public class TestDetail {
     private SubmissionStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "test_id", nullable = false)
+    @JoinColumn(name = "test_id")
     private Test test;
 
     @ManyToOne(fetch = FetchType.LAZY)
