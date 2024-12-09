@@ -3,6 +3,7 @@ package com.enigma.jobConnector.controller;
 
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.dto.request.AuthRequest;
+import com.enigma.jobConnector.dto.request.RefreshTokenRequest;
 import com.enigma.jobConnector.dto.response.AuthResponse;
 import com.enigma.jobConnector.services.AuthService;
 import com.enigma.jobConnector.utils.ResponseUtil;
@@ -45,6 +46,13 @@ public class AuthController {
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = getRefreshTokenFromCookie(request);
         AuthResponse authResponse = authService.refreshToken(refreshToken);
+        setCookie(response, authResponse.getRefreshToken());
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.OK, authResponse);
+    }
+
+    @PostMapping(path = "/refresh-token-mobile")
+    public ResponseEntity<?> refreshTokenMobile(@RequestBody RefreshTokenRequest request, HttpServletResponse response) {
+        AuthResponse authResponse = authService.refreshToken(request.getRefreshToken());
         setCookie(response, authResponse.getRefreshToken());
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.OK, authResponse);
     }
