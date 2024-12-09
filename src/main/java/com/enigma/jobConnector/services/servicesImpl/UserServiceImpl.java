@@ -2,6 +2,7 @@ package com.enigma.jobConnector.services.servicesImpl;
 
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.UserRole;
+import com.enigma.jobConnector.dto.request.ChangePasswordRequest;
 import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
 import com.enigma.jobConnector.dto.response.UserResponse;
@@ -137,6 +138,19 @@ public class UserServiceImpl implements UserService {
         validateCurrentUser();
         User currentUser = AuthenticationContextUtil.getCurrentUser();
         return getUserResponse(getOne(currentUser.getId()));
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequest request) {
+        User currentUser = AuthenticationContextUtil.getCurrentUser();
+        if (!passwordEncoder.matches(request.getOldPassword(), currentUser.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        }
+        if (passwordEncoder.matches(request.getNewPassword(), currentUser.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.PASSWORD_SAME);
+        }
+        currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(currentUser);
     }
 
     @Override
