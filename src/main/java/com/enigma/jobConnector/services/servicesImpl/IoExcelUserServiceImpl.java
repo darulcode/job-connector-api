@@ -3,6 +3,7 @@ package com.enigma.jobConnector.services.servicesImpl;
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.UserRole;
 import com.enigma.jobConnector.dto.request.UserCategoryRequest;
+import com.enigma.jobConnector.dto.response.ImportUserResponse;
 import com.enigma.jobConnector.entity.User;
 import com.enigma.jobConnector.entity.UserCategory;
 import com.enigma.jobConnector.services.IoExcelUserService;
@@ -36,7 +37,7 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void importExcelUserData(MultipartFile file) {
+    public ImportUserResponse importExcelUserData(MultipartFile file) {
         if (file.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.INVALID_EXCEL_FILE);
         }
@@ -79,7 +80,8 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
                     users.add(user);
                 }
             }
-            userService.batchCreate(users);
+            ImportUserResponse importUserResponse = userService.batchCreate(users);
+            return importUserResponse;
         } catch (Exception e) {
             throw new RuntimeException(Constant.FAILED_PROCESS_EXCEL_FILE, e);
         }

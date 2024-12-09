@@ -1,6 +1,7 @@
 package com.enigma.jobConnector.controller;
 
 import com.enigma.jobConnector.constants.Constant;
+import com.enigma.jobConnector.dto.response.ImportUserResponse;
 import com.enigma.jobConnector.services.IoExcelUserService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,8 +21,11 @@ public class IoExcelUserController {
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PostMapping("/import")
     public ResponseEntity<?> importUser(@RequestParam MultipartFile file) {
-        ioExcelUserService.importExcelUserData(file);
-        return ResponseUtil.buildResponse(HttpStatus.CREATED, Constant.SUCCESS_IMPORT_USER, null);
+        ImportUserResponse response = ioExcelUserService.importExcelUserData(file);
+        HttpStatus httpStatus = response.getFailedImportCount() > 0 ? HttpStatus.CREATED : HttpStatus.CONFLICT;
+        return ResponseUtil.buildResponse(httpStatus, String.format(
+                Constant.SUCCESS_IMPORT_USER, response.getSuccessImportCount(), response.getFailedImportCount()
+        ), response);
     }
 
     @PreAuthorize("hasRole('SUPER_ADMIN')")

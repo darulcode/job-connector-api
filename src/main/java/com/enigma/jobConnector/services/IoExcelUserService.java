@@ -1,9 +1,10 @@
 package com.enigma.jobConnector.services;
 
+import com.enigma.jobConnector.dto.response.ImportUserResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IoExcelUserService {
-    void importExcelUserData(MultipartFile file);
+    ImportUserResponse importExcelUserData(MultipartFile file);
     void exportExcelUserData(HttpServletResponse response);
 }

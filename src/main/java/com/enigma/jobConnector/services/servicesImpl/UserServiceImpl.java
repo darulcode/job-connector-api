@@ -4,6 +4,8 @@ import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.UserRole;
 import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
+import com.enigma.jobConnector.dto.response.FailedImportUserResponse;
+import com.enigma.jobConnector.dto.response.ImportUserResponse;
 import com.enigma.jobConnector.dto.response.UserResponse;
 import com.enigma.jobConnector.entity.User;
 import com.enigma.jobConnector.entity.UserCategory;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +47,7 @@ public class UserServiceImpl implements UserService {
     private final UserCategoryService userCategoryService;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         User user = User.builder()
                 .name("Super Admin")
                 .email("superadmin@enigma.com")
@@ -53,7 +56,9 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode("password"))
                 .build();
 
-        if (userRepository.findByUsername("superadmin").isPresent()) {return;}
+        if (userRepository.findByUsername("superadmin").isPresent()) {
+            return;
+        }
         userRepository.save(user);
     }
 
@@ -94,8 +99,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse update(String id, UserRequest userRequest) {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
-        if (currentUser == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
-        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        if (currentUser == null)
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         User user = getOne(id);
         user.setName(userRequest.getName());
         user.setUsername(userRequest.getUsername());
@@ -108,8 +115,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(String id) {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
-        if (currentUser == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
-        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN) ) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        if (currentUser == null)
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         userRepository.delete(getOne(id));
     }
 
@@ -121,14 +130,51 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), sortBy);
         Specification<User> userSpecification = UserSpecification.getSpecification(request);
 
-        Page<User> users = userRepository.findAll(userSpecification,pageable);
+        Page<User> users = userRepository.findAll(userSpecification, pageable);
         return users.map(this::getUserResponse);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void batchCreate(List<User> users) {
-        userRepository.saveAll(users);
+    public ImportUserResponse batchCreate(List<User> users) {
+        Integer successImportCount = 0;
+        Integer failedImportCount = 0;
+        List<UserResponse> successImportedUser = new ArrayList<>();
+        List<FailedImportUserResponse> failedImportedUser = new ArrayList<>();
+
+        for (User user : users) {
+            if (userRepository.findByUsernameAndEmail(user.getUsername(), user.getEmail()).isPresent()) {
+                FailedImportUserResponse failedImportUserResponse = FailedImportUserResponse.builder()
+                        .message(String.format(Constant.FAILED_IMPORT_USER_USERNAME_AND_EMAIL_ALREADY_EXIST, user.getUsername(), user.getEmail()))
+                        .build();
+                failedImportedUser.add(failedImportUserResponse);
+                failedImportCount++;
+            } else if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+                FailedImportUserResponse failedImportUserResponse = FailedImportUserResponse.builder()
+                        .message(String.format(Constant.FAILED_IMPORT_USER_USERNAME_ALREADY_EXIST, user.getUsername()))
+                        .build();
+                failedImportedUser.add(failedImportUserResponse);
+                failedImportCount++;
+            } else if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+                FailedImportUserResponse failedImportUserResponse = FailedImportUserResponse.builder()
+                        .message(String.format(Constant.FAILED_IMPORT_USER_EMAIL_ALREADY_EXIST, user.getEmail()))
+                        .build();
+                failedImportedUser.add(failedImportUserResponse);
+                failedImportCount++;
+            } else {
+                UserResponse userResponse = getUserResponse(userRepository.save(user));
+                successImportedUser.add(userResponse);
+                successImportCount++;
+            }
+        }
+
+        ImportUserResponse importUserResponse = ImportUserResponse.builder()
+                .successImportCount(successImportCount)
+                .failedImportCount(failedImportCount)
+                .successImportedUser(successImportedUser)
+                .failedImportedUser(failedImportedUser)
+                .build();
+        return importUserResponse;
     }
 
     @Transactional(readOnly = true)
@@ -163,7 +209,7 @@ public class UserServiceImpl implements UserService {
 
     private UserResponse getUserResponse(User user) {
         String category = null;
-        if (user.getUserCategory() !=  null){
+        if (user.getUserCategory() != null) {
             category = user.getUserCategory().getName();
         }
         return UserResponse.builder()
