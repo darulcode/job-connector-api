@@ -22,7 +22,7 @@ public class IoExcelUserController {
     @PostMapping("/import")
     public ResponseEntity<?> importUser(@RequestParam MultipartFile file) {
         ImportUserResponse response = ioExcelUserService.importExcelUserData(file);
-        HttpStatus httpStatus = response.getFailedImportCount() > 0 ? HttpStatus.CREATED : HttpStatus.CONFLICT;
+        HttpStatus httpStatus = response.getSuccessImportCount() > 0 ? HttpStatus.CREATED : HttpStatus.CONFLICT;
         return ResponseUtil.buildResponse(httpStatus, String.format(
                 Constant.SUCCESS_IMPORT_USER, response.getSuccessImportCount(), response.getFailedImportCount()
         ), response);
