@@ -46,7 +46,10 @@ public class Constant {
     public static final String SUCCESS_DELETE_CLIENT = "Successfully deleted client";
     public static final String SUCCESS_FETCHING_ALL_TEST = "Successfully fetching all test";
     public static final String SUCCESS_DELETE_TEST = "Successfully deleted test";
-    public static final String SUCCESS_FETHING_TEST_DETAILS = "Successfully fething all test details";
+    public static final String SUCCESS_FETCHING_TEST_DETAILS = "Successfully fething all test details";
+    public static final String SUCCESS_CHANGE_PASSWORD = "Successfully change password";
+    public static final String SUCCESS_SUBMITTED_SUBMISSION = "Successfully submitted submission";
+    public static final String SUCCESS_CHANGE_STATUS_SUBMISSION = "Successfully change status submission";
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
     public static final String TOKEN_INVALID="Token invalid";
@@ -63,6 +66,8 @@ public class Constant {
     public static final String REFRESH_TOKEN_REQUIRED_MESSAGE="Refresh Token is required";
     public static final String CLIENT_ALREADY_EXIST = "Client already exist";
     public static final String CLIENT_NOT_FOUND = "Client not found";
+    public static final String STATUS_SUBMISSION_NOT_FOUND = "status submission not found";
+    public static final String PASSWORD_SAME = "Cant use latest password";
 
     public static final String TEST_NOT_FOUND = "Test not found";
 
