@@ -2,6 +2,7 @@ package com.enigma.jobConnector.services.servicesImpl;
 
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.UserRole;
+import com.enigma.jobConnector.constants.UserStatus;
 import com.enigma.jobConnector.dto.request.UserCategoryRequest;
 import com.enigma.jobConnector.dto.response.ImportUserResponse;
 import com.enigma.jobConnector.entity.User;
@@ -75,6 +76,7 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
                             .password(password)
                             .role(role)
                             .userCategory(userCategory)
+                            .status(UserStatus.AKTIVE)
                             .build();
 
                     users.add(user);
