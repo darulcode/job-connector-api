@@ -1,5 +1,6 @@
 package com.enigma.jobConnector.services;
 
+import com.enigma.jobConnector.dto.request.ChangePasswordRequest;
 import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
 import com.enigma.jobConnector.dto.response.UserResponse;
@@ -17,4 +18,5 @@ public interface UserService extends UserDetailsService {
     Page<UserResponse> findAllUser(UserSearchRequest userSearchRequest);
     UserResponse getUserDetails(String id);
     UserResponse getSelfUserDetails();
+    void changePassword(ChangePasswordRequest request);
 }
