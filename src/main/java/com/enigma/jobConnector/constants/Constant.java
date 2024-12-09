@@ -31,6 +31,7 @@ public class Constant {
     public static final String SUCCESS_FETCHING_ALL_USER_CATEGORY = "Successfully fetching all user category";
     public static final String SUCCESS_FETCHING_USER_CATEGORY="Successfully fetch user category";
     public static final String SUCCESS_DELETE_USER_CATEGORY = "Successfully deleted user category";
+    public static final String SUCCESS_CHANGE_PASSWORD = "Successfully change password";
 
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
@@ -46,4 +47,5 @@ public class Constant {
     public static final String EMAIL_ALREADY_EXIST = "Username or email already exist";
     public static final String USERNAME_NOT_FOUND = "Username not found";
     public static final String REFRESH_TOKEN_REQUIRED_MESSAGE="Refresh Token is required";
+    public static final String PASSWORD_SAME="New password is same with old password";
 }

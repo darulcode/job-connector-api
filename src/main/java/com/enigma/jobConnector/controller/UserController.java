@@ -1,6 +1,7 @@
 package com.enigma.jobConnector.controller;
 
 import com.enigma.jobConnector.constants.Constant;
+import com.enigma.jobConnector.dto.request.ChangePasswordRequest;
 import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
 import com.enigma.jobConnector.dto.response.UserResponse;
@@ -59,6 +60,12 @@ public class UserController {
                 .build();
         Page<UserResponse> response = userService.findAllUser(userSearchRequest);
         return ResponseUtil.buildResponsePage(HttpStatus.OK, Constant.SUCCESS_FETCHING_ALL_USER, response);
+    }
+
+    @PutMapping("change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request){
+        userService.changePassword(request);
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_CHANGE_PASSWORD, null);
     }
 
     @GetMapping("/{id}")
