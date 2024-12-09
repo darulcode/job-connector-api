@@ -57,7 +57,7 @@ public class TestDetailServiceImpl implements TestDetailService {
 
     @Override
     public TestDetail getOne(String id) {
-        return testDetailRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Test detail not found"));
+        return testDetailRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.TEST_DETAIL_NOT_FOUND));
     }
 
     @Override
@@ -72,6 +72,7 @@ public class TestDetailServiceImpl implements TestDetailService {
         return testDetails.stream().map(this::getTestResponse).toList();
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public TestDetailResponse submitSubmission(String id, UpdateTestDetailRequest request, MultipartFile file) throws IOException {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
@@ -79,10 +80,11 @@ public class TestDetailServiceImpl implements TestDetailService {
         if (!currentUser.getId().equals(testDetail.getUser().getId())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         }
-        FileSubmissionTest fileSubmissionTest = null;
+        FileSubmissionTest fileSubmissionTest;
         if (!file.isEmpty()) {
-            fileSubmissionTest = fileSubmissionService.createFileSubmission(file);
+            fileSubmissionTest = fileSubmissionService.createFileSubmission(file, testDetail);
             testDetail.setFileSubmissionTest(fileSubmissionTest);
+            fileSubmissionTest.setTestDetail(testDetail);
         }
         if (!request.getSubmissionText().isEmpty()) {
             testDetail.setSubmissionText(request.getSubmissionText());
@@ -92,6 +94,7 @@ public class TestDetailServiceImpl implements TestDetailService {
         return getTestDetailResponse(testDetail);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public TestDetailResponse updateStatusSubmission(String id, UpdateStatusSubmissionRequest request) {
         AuthenticationContextUtil.validateCurrentUserRoleAdmin();
@@ -121,7 +124,6 @@ public class TestDetailServiceImpl implements TestDetailService {
     }
 
     private TestResponse getTestResponse(TestDetail testDetail) {
-        log.info("Masuk ke get test response");
         Test test = testDetail.getTest();
         FileTestResponse fileTestResponse = new FileTestResponse(null, null);
         if (test.getFileTest() != null) {
