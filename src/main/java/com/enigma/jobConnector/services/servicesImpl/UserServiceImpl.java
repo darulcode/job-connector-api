@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.enigma.jobConnector.utils.AuthenticationContextUtil.validateCurrentUser;
@@ -88,7 +89,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse update(String id, UserRequest userRequest) {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
         if (currentUser == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
-        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN) && !Objects.equals(currentUser.getId(), id)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         User user = getOne(id);
         user.setName(userRequest.getName());
         user.setUsername(userRequest.getUsername());
