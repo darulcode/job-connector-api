@@ -143,7 +143,7 @@ public class TestDetailServiceImpl implements TestDetailService {
         Test test = testDetail.getTest();
         FileTestResponse fileTestResponse = new FileTestResponse(null, null);
         if (test.getFileTest() != null) {
-            fileTestResponse.setUrlFIle("/api/file/"+ test.getFileTest().getFile().getId());
+            fileTestResponse.setUrlFile("/api/file/"+ test.getFileTest().getFile().getId());
             fileTestResponse.setFileName(test.getFileTest().getFile().getName());
         }
         TestDetailResponse testDetailResponse = getTestDetailResponse(testDetail);

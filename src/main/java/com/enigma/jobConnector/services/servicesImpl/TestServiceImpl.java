@@ -120,7 +120,7 @@ public class TestServiceImpl implements TestService {
         List<TestDetailResponse> testDetailResponses = testDetailService.findByTestId(test.getId());
         FileTestResponse fileTestResponse = new FileTestResponse(null, null);
         if (test.getFileTest() != null) {
-            fileTestResponse.setUrlFIle("/api/file/"+ test.getFileTest().getFile().getId());
+            fileTestResponse.setUrlFile("/api/file/"+ test.getFileTest().getFile().getId());
             fileTestResponse.setFileName(test.getFileTest().getFile().getName());
         }
 
