@@ -27,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -65,8 +66,10 @@ public class TestDetailServiceImpl implements TestDetailService {
         return getTestResponse(getOne(id));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<TestResponse> findAllTestByUser() {
+        AuthenticationContextUtil.validateCurrentUser();
         User currentUser = AuthenticationContextUtil.getCurrentUser();
         List<TestDetail> testDetails = testDetailRepository.findAllByUserId(currentUser.getId());
         return testDetails.stream().map(this::getTestResponse).toList();
@@ -106,6 +109,19 @@ public class TestDetailServiceImpl implements TestDetailService {
         testDetail.setStatus(submissionStatus);
         testDetailRepository.saveAndFlush(testDetail);
         return getTestDetailResponse(testDetail);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addTrainee(Test test, String userId) {
+        Optional<TestDetail> testDetail = testDetailRepository.findByTestAndUserId(test, userId);
+
+        if (testDetail.isEmpty()) {
+            TestDetailRequest userRequest = TestDetailRequest.builder()
+                    .userId(userId)
+                    .build();
+            create(userRequest, test);
+        }
     }
 
 

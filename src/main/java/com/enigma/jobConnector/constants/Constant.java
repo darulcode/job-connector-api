@@ -52,6 +52,7 @@ public class Constant {
     public static final String SUCCESS_CHANGE_PASSWORD = "Successfully change password";
     public static final String SUCCESS_SUBMITTED_SUBMISSION = "Successfully submitted submission";
     public static final String SUCCESS_CHANGE_STATUS_SUBMISSION = "Successfully change status submission";
+    public static final String SUCCESS_UPDATE_TEST_MESSAGE = "Successfully updated test";
 
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
