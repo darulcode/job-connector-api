@@ -203,7 +203,7 @@ public class UserServiceImpl implements UserService {
     public void changePassword(ChangePasswordRequest request) {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
         if (!passwordEncoder.matches(request.getOldPassword(), currentUser.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.INVALID_CREDENTIAL);
         }
         if (passwordEncoder.matches(request.getNewPassword(), currentUser.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.PASSWORD_SAME);
