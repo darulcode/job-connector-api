@@ -68,13 +68,12 @@ public class TestServiceImpl implements TestService {
                 .status(TestStatus.PENDING)
                 .build();
         testRepository.saveAndFlush(test);
-        fileTest.setTest(test);
-        request.getDetails().forEach(testDetailRequest -> {
-            testDetailService.create(testDetailRequest, test);
-        });
+        if (fileTest != null) fileTest.setTest(test);
+        request.getDetails().forEach(testDetailRequest -> testDetailService.create(testDetailRequest, test));
         return getTestResponse(test);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<TestResponse> getAll(TestSearchRequest request) {
         Sort sortBy = ShortUtil.parseSort(request.getSortBy());
@@ -86,16 +85,39 @@ public class TestServiceImpl implements TestService {
         return response.map(this::getTestResponse);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteTest(String id) {
         AuthenticationContextUtil.validateCurrentUserRoleAdmin();
         testRepository.delete(getOne(id));
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public TestResponse updateTest(String id, TestRequest request, MultipartFile file) throws IOException {
+        Test test = getOne(id);
+
+        if (file != null) {
+            if (test.getFileTest() == null) {
+                test.setFileTest(fileTestService.createFile(file));
+            } else {
+                test.setFileTest(fileTestService.udpdateFileTest(test, file));
+            }
+        }
+
+        request.getDetails().forEach(trainee -> testDetailService.addTrainee(test, trainee.getUserId()));
+
+        test.setDeadlineAt(request.getDeadlineAt());
+        test.setDescription(request.getDescription());
+        test.setClient(clientService.getOne(request.getClientId()));
+        test.setStatus(TestStatus.PENDING);
+
+        testRepository.save(test);
+        return getTestResponse(test);
+    }
+
     private TestResponse getTestResponse(Test test) {
-        log.info("Memasuki get test response");
         List<TestDetailResponse> testDetailResponses = testDetailService.findByTestId(test.getId());
-        log.info("Memasuki get test detail response : {}", testDetailResponses);
         FileTestResponse fileTestResponse = new FileTestResponse(null, null);
         if (test.getFileTest() != null) {
             fileTestResponse.setUrlFIle("/api/file/"+ test.getFileTest().getFile().getId());

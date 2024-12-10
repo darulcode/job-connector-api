@@ -14,4 +14,5 @@ public interface TestService {
     TestResponse create(TestRequest test, MultipartFile file) throws IOException;
     Page<TestResponse> getAll(TestSearchRequest testSearchRequest);
     void deleteTest(String id);
+    TestResponse updateTest(String id, TestRequest test, MultipartFile file) throws IOException;
 }

@@ -40,6 +40,21 @@ public class TestController {
         }
     }
 
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/{id}")
+    public ResponseEntity<?> update(@PathVariable("id") String id,
+                                    @RequestPart(name = "file", required = false) MultipartFile multipartFiles,
+                                    @RequestPart(name = "test") String request
+                                    ) {
+        try {
+            TestRequest testRequest = objectMapper.readValue(request, TestRequest.class);
+            TestResponse testResponse = testService.updateTest(id,testRequest, multipartFiles);
+            return ResponseUtil.buildResponse(HttpStatus.CREATED, Constant.SUCCESS_UPDATE_TEST_MESSAGE, testResponse);
+
+        } catch (Exception e) {
+            return ResponseUtil.buildResponse(HttpStatus.BAD_REQUEST, e.getMessage(), null);
+        }
+    }
+
     @GetMapping
     public ResponseEntity<?> getAllTests(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
