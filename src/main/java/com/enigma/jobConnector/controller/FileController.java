@@ -3,6 +3,8 @@ package com.enigma.jobConnector.controller;
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.dto.response.GetFileResponse;
 import com.enigma.jobConnector.services.FileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,10 +19,13 @@ import java.io.IOException;
 @RestController
 @RequestMapping(Constant.FILE_API)
 @RequiredArgsConstructor
+@Tag(name = "File", description = "APIs for get file from database")
 public class FileController {
 
     private final FileService fileService;
 
+
+    @Operation(summary = "get file")
     @GetMapping("/{id}")
     public ResponseEntity<?> getFile(@PathVariable String id) throws IOException {
         GetFileResponse response = fileService.getFileFromCloudinary(id);

@@ -7,6 +7,8 @@ import com.enigma.jobConnector.dto.request.UserSearchRequest;
 import com.enigma.jobConnector.dto.response.UserResponse;
 import com.enigma.jobConnector.services.UserService;
 import com.enigma.jobConnector.utils.ResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,9 +19,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(Constant.USER_API)
 @RequiredArgsConstructor
+@Tag(name = "User", description = "APIs for create, update, delete and get user")
 public class UserController {
     private final UserService userService;
 
+    @Operation(summary = "create user")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserRequest userRequest) {
@@ -27,24 +31,28 @@ public class UserController {
         return ResponseUtil.buildResponse(HttpStatus.CREATED, Constant.SUCCESS_CREATE_USER, userResponse);
     }
 
+    @Operation(summary = "update user")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable String id,@RequestBody UserRequest userRequest) {
         UserResponse response = userService.update(id , userRequest);
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_UPDATE_USER, response);
     }
 
+    @Operation(summary = "delete user")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable String id) {
         userService.delete(id);
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_DELETE_USER, null);
     }
 
+    @Operation(summary = "get self detail")
     @GetMapping("/me")
     public ResponseEntity<?> me() {
         UserResponse response = userService.getSelfUserDetails();
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_FETCHING_USER, response);
     }
 
+    @Operation(summary = "get all user")
     @GetMapping
     public ResponseEntity<?> getAllUsers(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
@@ -62,12 +70,14 @@ public class UserController {
         return ResponseUtil.buildResponsePage(HttpStatus.OK, Constant.SUCCESS_FETCHING_ALL_USER, response);
     }
 
+    @Operation(summary = "change password")
     @PutMapping("change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request){
         userService.changePassword(request);
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_CHANGE_PASSWORD, null);
     }
 
+    @Operation(summary = "get user")
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable String id) {
         UserResponse userDetails = userService.getUserDetails(id);

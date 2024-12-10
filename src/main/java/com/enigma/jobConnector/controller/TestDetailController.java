@@ -9,6 +9,8 @@ import com.enigma.jobConnector.dto.response.TestResponse;
 import com.enigma.jobConnector.services.TestDetailService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +23,20 @@ import java.util.List;
 @RestController
 @RequestMapping(Constant.TEST_DETAIL_API)
 @RequiredArgsConstructor
+@Tag(name = "Test detail/submission", description = "APIs for create, update, delete and get test detail/submission")
 public class TestDetailController {
 
     private final TestDetailService testDetailService;
     private final ObjectMapper objectMapper;
 
+    @Operation(summary = "get all submission")
     @GetMapping
     public ResponseEntity<?> getAllTestDetails() {
         List<TestResponse> responses = testDetailService.findAllTestByUser();
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_FETCHING_TEST_DETAILS, responses);
     }
 
+    @Operation(summary = "submitted submission")
     @PostMapping("/{id}")
     public ResponseEntity<?> postTestDetail(@PathVariable String id,
                                             @RequestPart(name = "file", required = false) MultipartFile multipartFiles,
@@ -45,6 +50,7 @@ public class TestDetailController {
         }
     }
 
+    @Operation(summary = "update status user submission")
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateStatusSubmission(
             @PathVariable String id,
@@ -54,6 +60,7 @@ public class TestDetailController {
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_CHANGE_STATUS_SUBMISSION, testDetailResponse);
     }
 
+    @Operation(summary = "get test detail")
     @GetMapping("/{id}")
     public ResponseEntity<?> getTestDetail(@PathVariable String id) {
         TestResponse response = testDetailService.findById(id);

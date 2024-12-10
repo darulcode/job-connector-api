@@ -4,6 +4,8 @@ import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.dto.response.ImportUserResponse;
 import com.enigma.jobConnector.services.IoExcelUserService;
 import com.enigma.jobConnector.utils.ResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,9 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping(Constant.USER_API + "/data")
 @RequiredArgsConstructor
+@Tag(name = "I/O excel user", description = "APIs for create or export user using excel file")
 public class IoExcelUserController {
     private final IoExcelUserService ioExcelUserService;
 
+    @Operation(summary = "create users with excel file")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @PostMapping("/import")
     public ResponseEntity<?> importUser(@RequestParam MultipartFile file) {
@@ -28,6 +32,7 @@ public class IoExcelUserController {
         ), response);
     }
 
+    @Operation(summary = "export user output excel file")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     @GetMapping("/export")
     public void exportUser(HttpServletResponse response) {
