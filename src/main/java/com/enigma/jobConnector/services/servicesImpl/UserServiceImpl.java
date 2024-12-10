@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse update(String id, UserRequest userRequest) {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
         if (currentUser == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
-        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN) && currentUser.getId().equals(id)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
+        if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN) && !currentUser.getId().equals(id)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         User user = getOne(id);
         user.setName(userRequest.getName());
         user.setUsername(userRequest.getUsername());
