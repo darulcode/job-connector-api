@@ -9,5 +9,5 @@ import lombok.*;
 @Builder
 public class FileTestResponse {
     private String fileName;
-    private String urlFIle;
+    private String urlFile;
 }
