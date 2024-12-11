@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -76,6 +77,7 @@ public class TestServiceImpl implements TestService {
     @Transactional(readOnly = true)
     @Override
     public Page<TestResponse> getAll(TestSearchRequest request) {
+        updateStatusIfPastDeadline();
         Sort sortBy = ShortUtil.parseSort(request.getSortBy());
         if (request.getPage() <= 0) request.setPage(1);
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), sortBy);
@@ -96,7 +98,6 @@ public class TestServiceImpl implements TestService {
     @Override
     public TestResponse updateTest(String id, TestRequest request, MultipartFile file) throws IOException {
         Test test = getOne(id);
-
         if (file != null) {
             if (test.getFileTest() == null) {
                 test.setFileTest(fileTestService.createFile(file));
@@ -104,9 +105,7 @@ public class TestServiceImpl implements TestService {
                 test.setFileTest(fileTestService.udpdateFileTest(test, file));
             }
         }
-
         request.getDetails().forEach(trainee -> testDetailService.addTrainee(test, trainee.getUserId()));
-
         test.setDeadlineAt(request.getDeadlineAt());
         test.setDescription(request.getDescription());
         test.setClient(clientService.getOne(request.getClientId()));
@@ -114,6 +113,23 @@ public class TestServiceImpl implements TestService {
 
         testRepository.save(test);
         return getTestResponse(test);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void changeTestStatus(String id, String status) {
+        Test test = getOne(id);
+        TestStatus testStatus = TestStatus.fromDescription(status);
+        if (testStatus == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.TEST_STATUS_NOT_FOUND);
+        test.setStatus(testStatus);
+        testRepository.save(test);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public TestResponse findById(String id) {
+        updateStatusIfPastDeadline();
+        return getTestResponse(getOne(id));
     }
 
     private TestResponse getTestResponse(Test test) {
@@ -136,6 +152,12 @@ public class TestServiceImpl implements TestService {
                 .testDetail(testDetailResponses)
                 .build();
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updateStatusIfPastDeadline() {
+        testRepository.updateStatusToAwaiting(TestStatus.AWAITING, LocalDateTime.now(), TestStatus.PENDING);
+    }
+
 
 }
 

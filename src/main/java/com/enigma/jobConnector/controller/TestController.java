@@ -2,16 +2,14 @@ package com.enigma.jobConnector.controller;
 
 
 import com.enigma.jobConnector.constants.Constant;
+import com.enigma.jobConnector.dto.request.ChangeStatusTestRequest;
 import com.enigma.jobConnector.dto.request.TestRequest;
 import com.enigma.jobConnector.dto.request.TestSearchRequest;
 import com.enigma.jobConnector.dto.response.TestResponse;
 import com.enigma.jobConnector.services.TestService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,17 +17,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @RestController
 @RequestMapping(Constant.TEST_API)
 @RequiredArgsConstructor
-@Tag(name = "Test/interview", description = "APIs for create, update, delete and get test/interview")
 public class TestController {
 
     private final TestService testService;
     private final ObjectMapper objectMapper;
 
-    @Operation(summary = "create test/interview")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(@RequestPart(name = "file", required = false) MultipartFile multipartFiles,
                                     @RequestPart(name = "test") String request) {
@@ -43,7 +38,6 @@ public class TestController {
         }
     }
 
-    @Operation(summary = "update test/interview")
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, path = "/{id}")
     public ResponseEntity<?> update(@PathVariable("id") String id,
                                     @RequestPart(name = "file", required = false) MultipartFile multipartFiles,
@@ -59,7 +53,12 @@ public class TestController {
         }
     }
 
-    @Operation(summary = "get all test/interview")
+    @PutMapping("/status/{id}")
+    public ResponseEntity<?> updateStatus(@PathVariable("id") String id, @RequestBody ChangeStatusTestRequest request) {
+        testService.changeTestStatus(id,request.getStatus());
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_UPDATE_TEST_MESSAGE, null);
+    }
+
     @GetMapping
     public ResponseEntity<?> getAllTests(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
@@ -83,7 +82,12 @@ public class TestController {
         return ResponseUtil.buildResponsePage(HttpStatus.OK, Constant.SUCCESS_FETCHING_ALL_TEST, responses);
     }
 
-    @Operation(summary = "delete test")
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable String id) {
+        TestResponse response = testService.findById(id);
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_FETCHING_TEST, response);
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<?> delete(@PathVariable("id") String id) {
         testService.deleteTest(id);
