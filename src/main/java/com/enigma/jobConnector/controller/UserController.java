@@ -2,6 +2,7 @@ package com.enigma.jobConnector.controller;
 
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.dto.request.ChangePasswordRequest;
+import com.enigma.jobConnector.dto.request.ForgotPasswordRequest;
 import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
 import com.enigma.jobConnector.dto.response.UserResponse;
@@ -9,12 +10,15 @@ import com.enigma.jobConnector.services.UserService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(Constant.USER_API)
@@ -82,6 +86,27 @@ public class UserController {
     public ResponseEntity<?> getUser(@PathVariable String id) {
         UserResponse userDetails = userService.getUserDetails(id);
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_FETCHING_USER, userDetails);
+    }
+
+    @Operation(summary = "Send forgot password to email user")
+    @PostMapping("/forgot/{email}")
+    public ResponseEntity<?> forgotPassword(@PathVariable String email) throws MessagingException, IOException {
+        userService.sendForgotPassword(email);
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_SEND_FORGOT_PASSWORD, null);
+    }
+
+    @Operation(summary = "Valide code forgot password")
+    @GetMapping("/verify/{code}")
+    public ResponseEntity<?> verifyCode(@PathVariable String code) {
+        userService.checkValidCode(code);
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.CODE_IS_VALID, null);
+    }
+
+    @Operation(summary = "Change password")
+    @PostMapping("/forgot")
+    public ResponseEntity<?> changePassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        userService.changePassword(forgotPasswordRequest);
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_CHANGE_PASSWORD, null);
     }
 
 }

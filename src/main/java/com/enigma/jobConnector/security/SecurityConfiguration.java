@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                                 .requestMatchers("/api/auth/login").permitAll()
                                 .requestMatchers("/api/auth/refresh-token").permitAll()
                                 .requestMatchers("/api/auth/refresh-token-mobile").permitAll()
+                                .requestMatchers("/email").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/user").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/user/**").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/api/client").permitAll()

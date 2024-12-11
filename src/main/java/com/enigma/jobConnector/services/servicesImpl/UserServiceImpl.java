@@ -4,6 +4,7 @@ import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.UserRole;
 import com.enigma.jobConnector.constants.UserStatus;
 import com.enigma.jobConnector.dto.request.ChangePasswordRequest;
+import com.enigma.jobConnector.dto.request.ForgotPasswordRequest;
 import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
 import com.enigma.jobConnector.dto.response.FailedImportUserResponse;
@@ -13,12 +14,14 @@ import com.enigma.jobConnector.dto.response.UserResponse;
 import com.enigma.jobConnector.entity.User;
 import com.enigma.jobConnector.entity.UserCategory;
 import com.enigma.jobConnector.repository.UserRepository;
+import com.enigma.jobConnector.services.EmailService;
 import com.enigma.jobConnector.services.UserCategoryService;
 import com.enigma.jobConnector.services.UserService;
 import com.enigma.jobConnector.specification.UserSpecification;
 import com.enigma.jobConnector.utils.AuthenticationContextUtil;
 import com.enigma.jobConnector.utils.ShortUtil;
 import jakarta.annotation.PostConstruct;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,9 +37,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.enigma.jobConnector.utils.AuthenticationContextUtil.validateCurrentUser;
 
@@ -48,6 +53,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserCategoryService userCategoryService;
+    private final EmailService emailService;
 
     @PostConstruct
     public void init(){
@@ -210,6 +216,32 @@ public class UserServiceImpl implements UserService {
         }
         currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(currentUser);
+    }
+
+    @Override
+    public void sendForgotPassword(String email) throws MessagingException, IOException {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.INVALID_CREDENTIAL));
+        //TODO: generate jwt or something for code forgot user
+        String uuid = String.valueOf(UUID.randomUUID());
+        user.setCode(uuid);
+        userRepository.save(user);
+        emailService.sendEmail(email, "Forgot Password Url", "google.com/"+uuid);
+    }
+
+    @Override
+    public void checkValidCode(String code) {
+        userRepository.findByCode(code).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.INVALID_CREDENTIAL));
+    }
+
+    @Override
+    public void changePassword(ForgotPasswordRequest request) {
+        User user = userRepository.findByCode(request.getCode()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.INVALID_CREDENTIAL));
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.PASSWORD_SAME);
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setCode(null);
+        userRepository.save(user);
     }
 
     @Override
