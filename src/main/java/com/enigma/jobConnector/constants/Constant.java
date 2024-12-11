@@ -53,6 +53,7 @@ public class Constant {
     public static final String SUCCESS_SUBMITTED_SUBMISSION = "Successfully submitted submission";
     public static final String SUCCESS_CHANGE_STATUS_SUBMISSION = "Successfully change status submission";
     public static final String SUCCESS_UPDATE_TEST_MESSAGE = "Successfully updated test";
+    public static final String SUCCESS_FETCHING_TEST = "Successfully fetching test";
 
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
@@ -63,9 +64,7 @@ public class Constant {
     public static final String CATEGORY_NOT_FOUND="Category not found";
     public static final String UNAUTHORIZED_MESSAGE="Unauthorized";
     public static final String USER_NOT_FOUND = "Invalid Credential";
-    public static final String USERNAME_ALREADY_EXIST = "Username already exist";
     public static final String USERNAME_OR_EMAIL_ALREADY_EXIST = "Username or email already exist";
-    public static final String EMAIL_ALREADY_EXIST = "Username or email already exist";
     public static final String USERNAME_NOT_FOUND = "Username not found";
     public static final String REFRESH_TOKEN_REQUIRED_MESSAGE="Refresh Token is required";
     public static final String CLIENT_ALREADY_EXIST = "Client already exist";
@@ -74,4 +73,5 @@ public class Constant {
     public static final String PASSWORD_SAME = "Can use your latest password";
     public static final String STATUS_SUBMISSION_NOT_FOUND = "Submission Status Not Found";
     public static final String TEST_DETAIL_NOT_FOUND = "Test detail not found";
+    public static final String TEST_STATUS_NOT_FOUND = "Test status not found";
 }

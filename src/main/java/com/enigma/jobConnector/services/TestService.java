@@ -15,4 +15,6 @@ public interface TestService {
     Page<TestResponse> getAll(TestSearchRequest testSearchRequest);
     void deleteTest(String id);
     TestResponse updateTest(String id, TestRequest test, MultipartFile file) throws IOException;
+    void changeTestStatus(String id, String status);
+    TestResponse findById(String id);
 }

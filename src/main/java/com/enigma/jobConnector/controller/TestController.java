@@ -2,6 +2,7 @@ package com.enigma.jobConnector.controller;
 
 
 import com.enigma.jobConnector.constants.Constant;
+import com.enigma.jobConnector.dto.request.ChangeStatusTestRequest;
 import com.enigma.jobConnector.dto.request.TestRequest;
 import com.enigma.jobConnector.dto.request.TestSearchRequest;
 import com.enigma.jobConnector.dto.response.TestResponse;
@@ -9,8 +10,6 @@ import com.enigma.jobConnector.services.TestService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class TestController {
 
-    private static final Logger log = LoggerFactory.getLogger(TestController.class);
     private final TestService testService;
     private final ObjectMapper objectMapper;
 
@@ -55,6 +53,12 @@ public class TestController {
         }
     }
 
+    @PutMapping("/status/{id}")
+    public ResponseEntity<?> updateStatus(@PathVariable("id") String id, @RequestBody ChangeStatusTestRequest request) {
+        testService.changeTestStatus(id,request.getStatus());
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_UPDATE_TEST_MESSAGE, null);
+    }
+
     @GetMapping
     public ResponseEntity<?> getAllTests(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
@@ -65,7 +69,6 @@ public class TestController {
             @RequestParam(name = "status", required = false) String status,
             @RequestParam(name = "client", required = false) String client
     ) {
-        log.info("Masuk ke test search request");
         TestSearchRequest request = TestSearchRequest.builder()
                 .query(query)
                 .sortBy(sortBy)
@@ -77,6 +80,12 @@ public class TestController {
                 .build();
         Page<TestResponse> responses = testService.getAll(request);
         return ResponseUtil.buildResponsePage(HttpStatus.OK, Constant.SUCCESS_FETCHING_ALL_TEST, responses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable String id) {
+        TestResponse response = testService.findById(id);
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_FETCHING_TEST, response);
     }
 
     @DeleteMapping("{id}")
