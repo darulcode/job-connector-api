@@ -44,7 +44,6 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String generateToken(User userAccount) {
-        log.info("Generating JWT Token :{}", userAccount.getId());
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
             return JWT.create()
@@ -55,7 +54,6 @@ public class JwtServiceImpl implements JwtService {
                     .withClaim("role", userAccount.getRole().getDescription())
                     .sign(algorithm);
         } catch (JWTCreationException e) {
-            log.error("error Creating JWT Token :{}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, Constant.ERROR_CREATE_JWT);
         }
     }

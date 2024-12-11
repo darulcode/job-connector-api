@@ -71,4 +71,5 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenService.deleteRefreshToken(userAccount.getId());
         jwtService.blacklistAccessToken(accessToken);
     }
+
 }

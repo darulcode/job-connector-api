@@ -51,6 +51,8 @@ public class Constant {
     public static final String SUCCESS_SUBMITTED_SUBMISSION = "Successfully submitted submission";
     public static final String SUCCESS_CHANGE_STATUS_SUBMISSION = "Successfully change status submission";
     public static final String SUCCESS_UPDATE_TEST_MESSAGE = "Successfully updated test";
+    public static final String SUCCESS_SEND_FORGOT_PASSWORD = "Successfully send forgot password to email";
+    public static final String CODE_IS_VALID = "Forgot password is valid";
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
     public static final String TOKEN_INVALID="Token invalid";
