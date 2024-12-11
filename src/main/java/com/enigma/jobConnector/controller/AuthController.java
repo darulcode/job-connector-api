@@ -95,6 +95,7 @@ public class AuthController {
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.OK, null);
     }
 
+
     private String getRefreshTokenFromCookie(HttpServletRequest request) {
         Cookie cookie = Arrays.stream(request.getCookies())
                 .filter(c -> c.getName().equals(Constant.REFRESH_TOKEN_COOKIE_NAME))
