@@ -6,13 +6,11 @@ import com.enigma.jobConnector.dto.response.UserCategoryResponse;
 import com.enigma.jobConnector.entity.UserCategory;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface UserCategoryService {
 
     UserCategoryResponse createUserCategory(UserCategoryRequest userCategoryRequest);
     UserCategoryResponse updateUserCategory(String id, UserCategoryRequest userCategoryRequest);
-    List<UserCategoryResponse> getAllUserCategories();
+    Page<UserCategoryResponse> getAllUserCategories(UserCategorySearchRequest request);
     UserCategory getOne(String id);
     UserCategoryResponse getById(String id);
     void delete(String id);
