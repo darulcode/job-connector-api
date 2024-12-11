@@ -39,6 +39,8 @@ public class Constant {
     public static final String SUCCESS_FETCHING_ALL_USER_CATEGORY = "Successfully fetching all user category";
     public static final String SUCCESS_FETCHING_USER_CATEGORY="Successfully fetch user category";
     public static final String SUCCESS_DELETE_USER_CATEGORY = "Successfully deleted user category";
+    public static final String SUCCESS_SEND_FORGOT_PASSWORD = "Successfully send forgot password";
+    public static final String SUCCESS_IMPORT_USER = "Successfully import user";
 
     public static final String SUCCESS_CREATE_TEST_MESSAGE = "Successfully created test";
     public static final String SUCCESS_FETCH_ALL_CLIENT = "Successfully fetching all clients";
@@ -54,11 +56,17 @@ public class Constant {
     public static final String SUCCESS_CHANGE_STATUS_SUBMISSION = "Successfully change status submission";
     public static final String SUCCESS_UPDATE_TEST_MESSAGE = "Successfully updated test";
     public static final String SUCCESS_FETCHING_TEST = "Successfully fetching test";
+    public static final String CODE_IS_VALID = "Code is valid";
 
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
     public static final String TOKEN_INVALID="Token invalid";
     public static final String INVALID_REFRESH_TOKEN="Invalid refresh token";
+    public static final String INVALID_EXCEL_FILE="Invalid excel file";
+    public static final String FAILED_PROCESS_EXCEL_FILE="Failed process excel file";
+    public static final String FAILED_IMPORT_USER_USERNAME_ALREADY_EXIST="Username already exist";
+    public static final String FAILED_IMPORT_USER_EMAIL_ALREADY_EXIST="Email already exist";
+    public static final String FAILED_IMPORT_USER_USERNAME_AND_EMAIL_ALREADY_EXIST="email and username already exist";
 
     public static final String CATEGORY_NAME_ALREADY_EXIST="Category name already exist";
     public static final String CATEGORY_NOT_FOUND="Category not found";
@@ -74,4 +82,5 @@ public class Constant {
     public static final String STATUS_SUBMISSION_NOT_FOUND = "Submission Status Not Found";
     public static final String TEST_DETAIL_NOT_FOUND = "Test detail not found";
     public static final String TEST_STATUS_NOT_FOUND = "Test status not found";
+    public static final String INVALID_CREDENTIAL = "Invalid credential";
 }
