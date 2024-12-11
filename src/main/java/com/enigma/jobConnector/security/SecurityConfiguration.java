@@ -38,6 +38,9 @@ public class SecurityConfiguration {
                         auth -> auth
                                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                                 .requestMatchers("/api/auth/login").permitAll()
+                                .requestMatchers("/api/auth/forgot/**").permitAll()
+                                .requestMatchers("/api/auth/verify/**").permitAll()
+                                .requestMatchers("/api/auth/forgot").permitAll()
                                 .requestMatchers("/api/auth/refresh-token").permitAll()
                                 .requestMatchers("/api/auth/refresh-token-mobile").permitAll()
                                 .requestMatchers("/email").permitAll()
