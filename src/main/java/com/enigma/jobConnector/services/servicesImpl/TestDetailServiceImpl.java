@@ -133,6 +133,8 @@ public class TestDetailServiceImpl implements TestDetailService {
         return TestDetailResponse.builder()
                 .id(testDetail.getId())
                 .userId(testDetail.getUser().getId())
+                .name(testDetail.getUser().getName())
+                .category(testDetail.getUser().getUserCategory().getName())
                 .status(testDetail.getStatus().getDescription())
                 .submissionText(testDetail.getSubmissionText())
                 .fileSubmission(fileSubmission)

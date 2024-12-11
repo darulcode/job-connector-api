@@ -11,6 +11,8 @@ import lombok.*;
 public class TestDetailResponse {
     private String id;
     private String userId;
+    private String name;
+    private String category;
     private String status;
     private String submissionText;
     private String fileSubmission;
