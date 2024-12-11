@@ -16,7 +16,6 @@ public class ClientSpecification {
     public static Specification<Client> getSpecification(ClientSearchRequest request) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            log.info("Create user Specification");
             if (StringUtils.hasText(request.getQuery())) {
                 Predicate queryPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + request.getQuery() + "%");
                 predicates.add(queryPredicate);

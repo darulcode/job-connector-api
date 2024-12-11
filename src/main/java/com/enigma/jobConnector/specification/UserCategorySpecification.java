@@ -16,7 +16,7 @@ public class UserCategorySpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (StringUtils.hasText(request.getQuery())) {
-                Predicate queryPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + request.getQuery() + "%");
+                Predicate queryPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + request.getQuery().toLowerCase() + "%");
                 predicates.add(queryPredicate);
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));

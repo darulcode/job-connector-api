@@ -17,9 +17,8 @@ public class UserSpecification {
     public static Specification<User> getSpecification(UserSearchRequest request) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            log.info("Create user Specification");
             if (StringUtils.hasText(request.getQuery())) {
-                Predicate queryPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + request.getQuery() + "%");
+                Predicate queryPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + request.getQuery().toLowerCase() + "%");
                 predicates.add(queryPredicate);
             }
                 predicates.add(criteriaBuilder.equal(root.get("status"), UserStatus.AKTIVE));
