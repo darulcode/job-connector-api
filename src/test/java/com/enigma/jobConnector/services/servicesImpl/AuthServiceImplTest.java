@@ -47,7 +47,7 @@ class AuthServiceImplTest {
     @Test
     void shouldReturnAuthResponseWhenLogin() {
         AuthRequest authRequest = AuthRequest.builder()
-                .email("username")
+                .email("email")
                 .password("password")
                 .build();
 

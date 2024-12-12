@@ -8,7 +8,7 @@ public enum UserRole {
 
     ROLE_SUPER_ADMIN("SuperAdmin"),
     ROLE_ADMIN("Admin"),
-    ROLE_USER("User");
+    ROLE_TRAINEE("Trainee");
 
     private String description;
 
