@@ -12,10 +12,7 @@ import com.enigma.jobConnector.entity.FileTest;
 import com.enigma.jobConnector.entity.Test;
 import com.enigma.jobConnector.entity.User;
 import com.enigma.jobConnector.repository.TestRepository;
-import com.enigma.jobConnector.services.ClientService;
-import com.enigma.jobConnector.services.FileTestService;
-import com.enigma.jobConnector.services.TestDetailService;
-import com.enigma.jobConnector.services.TestService;
+import com.enigma.jobConnector.services.*;
 import com.enigma.jobConnector.specification.TestSpecification;
 import com.enigma.jobConnector.utils.AuthenticationContextUtil;
 import com.enigma.jobConnector.utils.ShortUtil;
@@ -44,6 +41,7 @@ public class TestServiceImpl implements TestService {
     private final ClientService clientService;
     private final FileTestService fileTestService;
     private final TestDetailService testDetailService;
+    private final NotificationService notificationService;
 
     @Override
     public Test getOne(String id) {
@@ -71,6 +69,7 @@ public class TestServiceImpl implements TestService {
         testRepository.saveAndFlush(test);
         if (fileTest != null) fileTest.setTest(test);
         request.getDetails().forEach(testDetailRequest -> testDetailService.create(testDetailRequest, test));
+        notificationService.createBatchNotificationTest(client, getOne(test.getId()));
         return getTestResponse(test);
     }
 
@@ -98,11 +97,15 @@ public class TestServiceImpl implements TestService {
     @Override
     public TestResponse updateTest(String id, TestRequest request, MultipartFile file) throws IOException {
         Test test = getOne(id);
+        Client client = clientService.getOne(request.getClientId());
+
         if (file != null) {
             if (test.getFileTest() == null) {
                 test.setFileTest(fileTestService.createFile(file));
+                notificationService.createBatchNotificationTest(client, test);
             } else {
                 test.setFileTest(fileTestService.udpdateFileTest(test, file));
+                notificationService.createBatchNotificationTest(client, test);
             }
         }
         request.getDetails().forEach(trainee -> testDetailService.addTrainee(test, trainee.getUserId()));
@@ -112,6 +115,7 @@ public class TestServiceImpl implements TestService {
         test.setStatus(TestStatus.PENDING);
 
         testRepository.save(test);
+        notificationService.createBatchNotificationTest(client, test);
         return getTestResponse(test);
     }
 

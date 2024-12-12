@@ -27,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
     private final UserService userService;
+    private final NotificationTokenServiceImpl notificationTokenService;
 
     @Override
     public AuthResponse login(AuthRequest authRequest) {
@@ -39,6 +40,7 @@ public class AuthServiceImpl implements AuthService {
         User userAccount = (User) authenticate.getPrincipal();
         String accessToken = jwtService.generateToken(userAccount);
         String refreshToken = refreshTokenService.createToken(userAccount.getId());
+        notificationTokenService.create(authRequest.getNotificationToken(), userAccount);
         return AuthResponse.builder()
                 .id(userAccount.getId())
                 .accessToken(accessToken)

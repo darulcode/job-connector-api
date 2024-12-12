@@ -12,7 +12,8 @@ public class Constant {
     public static final String FILE_SUBMISSION_TABLE = "t_file_submission";
     public static final String CLIENT_TABLE = "m_client";
     public static final String FILE_TABLE = "t_file";
-
+    public static final String NOTIFICATION_TABLE = "t_notification";
+    public static final String NOTIFICATION_TOKEN_TABLE = "m_notification_token";
 
     public static final String AUTH_API = "/api/auth";
 
@@ -83,4 +84,16 @@ public class Constant {
     public static final String TEST_DETAIL_NOT_FOUND = "Test detail not found";
     public static final String TEST_STATUS_NOT_FOUND = "Test status not found";
     public static final String INVALID_CREDENTIAL = "Invalid credential";
+
+    public static final String INVALID_EXCEL_FILE = "Please upload a valid excel file";
+    public static final String SUCCESS_IMPORT_USER = "Success import %d users and failed import %d users";
+    public static final String FAILED_PROCESS_EXCEL_FILE = "Failed to process excel file";
+    public static final String FAILED_IMPORT_USER_USERNAME_AND_EMAIL_ALREADY_EXIST = "Failed import user: username %s and email %s already exist.";
+    public static final String FAILED_IMPORT_USER_USERNAME_ALREADY_EXIST = "Failed import user: username %s already exist.";
+    public static final String FAILED_IMPORT_USER_EMAIL_ALREADY_EXIST = "Failed import user: email %s already exist.";
+
+    public static final String SUCCESS_FETCHING_NOTIFICATION = "Successfully fetch notification";
+    public static final String SUCCESS_SET_READ_NOTIFICATION = "Notification has been read";
+    public static final String NOTIFICATION_TITLE_FORMAT = "Test/Interview : %s";
+    public static final String NOTIFICATION_NOT_FOUND = "Notification not found";
 }

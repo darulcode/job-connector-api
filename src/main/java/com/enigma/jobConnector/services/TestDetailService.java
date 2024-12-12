@@ -21,4 +21,5 @@ public interface TestDetailService {
     TestDetailResponse submitSubmission(String id, UpdateTestDetailRequest request, MultipartFile file) throws IOException;
     TestDetailResponse updateStatusSubmission(String id, UpdateStatusSubmissionRequest request);
     void addTrainee(Test test, String userId);
+    List<TestDetail> listFindByTestId(String testId);
 }

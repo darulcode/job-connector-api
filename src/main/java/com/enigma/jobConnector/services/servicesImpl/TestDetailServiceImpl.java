@@ -124,6 +124,11 @@ public class TestDetailServiceImpl implements TestDetailService {
         }
     }
 
+    @Override
+    public List<TestDetail> listFindByTestId(String testId) {
+        return testDetailRepository.findAllByTestId(testId);
+    }
+
 
     private TestDetailResponse getTestDetailResponse(TestDetail testDetail) {
         String fileSubmission = null;
