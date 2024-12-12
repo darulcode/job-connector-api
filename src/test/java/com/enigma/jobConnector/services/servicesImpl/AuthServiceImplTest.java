@@ -87,7 +87,7 @@ class AuthServiceImplTest {
 
         User mockUserAccount = User.builder()
                 .id("1")
-                .username("username")
+                .email("username")
                 .role(UserRole.ROLE_ADMIN)
                 .build();
         Mockito.when(userService.getOne(mockUserId)).thenReturn(mockUserAccount);
@@ -132,7 +132,7 @@ class AuthServiceImplTest {
 
         User mockUserAccount = User.builder()
                 .id("1")
-                .username("username")
+                .email("username")
                 .role(UserRole.ROLE_ADMIN)
                 .build();
 
