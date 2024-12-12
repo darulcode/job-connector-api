@@ -47,7 +47,6 @@ public class User implements UserDetails {
     @Column(name = "status")
     private UserStatus status;
 
-
     @Column(name = "code")
     private String code;
 
