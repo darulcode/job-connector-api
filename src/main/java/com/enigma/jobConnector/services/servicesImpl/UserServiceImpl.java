@@ -60,13 +60,12 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .name("Super Admin")
                 .email("superadmin@enigma.com")
-                .email("superadmin")
                 .phoneNumber("+62 82342343287432")
                 .role(UserRole.ROLE_SUPER_ADMIN)
                 .password(passwordEncoder.encode("password"))
                 .build();
 
-        if (userRepository.findByEmail("superadmin").isPresent()) {return;}
+        if (userRepository.findByEmail("superadmin@enigma.com").isPresent()) {return;}
         userRepository.save(user);
     }
 

@@ -42,6 +42,7 @@ public class ClientServiceImpl implements ClientService {
         });
         Client client = Client.builder()
                 .name(clientRequest.getName())
+                .address(clientRequest.getAddress())
                 .build();
         clientRepository.saveAndFlush(client);
         return getClientResponse(client);
@@ -53,6 +54,7 @@ public class ClientServiceImpl implements ClientService {
         validateCurrentUserRole();
         Client client = getOne(id);
         client.setName(clientRequest.getName());
+        client.setAddress(clientRequest.getAddress());
         clientRepository.saveAndFlush(client);
         return getClientResponse(client);
     }

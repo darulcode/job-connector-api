@@ -9,4 +9,5 @@ import lombok.*;
 @Builder
 public class ClientRequest {
     private String name;
+    private String address;
 }

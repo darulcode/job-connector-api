@@ -92,7 +92,7 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletRequest request) {
         String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         authService.logout(bearerToken);
-        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.OK, null);
+        return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_LOGOUT, null);
     }
 
 

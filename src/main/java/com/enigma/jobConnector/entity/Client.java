@@ -22,6 +22,10 @@ public class Client {
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 
+    @Column(name = "address", nullable = false)
+    private String address;
+
+
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY)
     private List<Test> tests;
 }

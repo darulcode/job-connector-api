@@ -56,6 +56,7 @@ public class Constant {
     public static final String SUCCESS_UPDATE_TEST_MESSAGE = "Successfully updated test";
     public static final String SUCCESS_FETCHING_TEST = "Successfully fetching test";
     public static final String CODE_IS_VALID = "Code is valid";
+    public static final String SUCCESS_LOGOUT = "Successfully logout";
 
     public static final String ERROR_CREATE_JWT="Error Creating JWT Token";
     public static final String TOKEN_INVALID="Token invalid";

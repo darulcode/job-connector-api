@@ -24,7 +24,6 @@ public class FileController {
 
     private final FileService fileService;
 
-
     @Operation(summary = "get file")
     @GetMapping("/{id}")
     public ResponseEntity<?> getFile(@PathVariable String id) throws IOException {
