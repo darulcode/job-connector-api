@@ -54,6 +54,10 @@ public class User implements UserDetails {
     @JoinColumn(name = "user_category_id")
     private UserCategory userCategory;
 
+    @OneToMany(mappedBy = "user")
+    private List<NotificationToken> notificationTokens;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
