@@ -74,7 +74,7 @@ public class TestServiceImpl implements TestService {
         return getTestResponse(test);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Page<TestResponse> getAll(TestSearchRequest request) {
         updateStatusIfPastDeadline();
