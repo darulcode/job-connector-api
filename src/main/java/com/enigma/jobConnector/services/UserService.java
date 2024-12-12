@@ -18,7 +18,6 @@ public interface UserService extends UserDetailsService {
 
     User getOne(String id);
     UserResponse create(UserRequest userRequest);
-    User findByUsername(String username);
     UserResponse update(String id, UserRequest userRequest);
     void delete(String id);
     Page<UserResponse> findAllUser(UserSearchRequest userSearchRequest);

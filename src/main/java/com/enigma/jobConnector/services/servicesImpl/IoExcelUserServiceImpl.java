@@ -58,7 +58,7 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
 
                     String name = row.getCell(0).getStringCellValue();
                     String email = row.getCell(1).getStringCellValue();
-                    String username = row.getCell(2).getStringCellValue();
+                    String phoneNumber = row.getCell(2).getStringCellValue();
                     String password = passwordEncoder.encode(row.getCell(3).getStringCellValue());
                     UserRole role = UserRole.fromDescription(row.getCell(4).getStringCellValue());
 
@@ -72,7 +72,7 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
                     User user = User.builder()
                             .name(name)
                             .email(email)
-                            .username(username)
+                            .phoneNumber(phoneNumber)
                             .password(password)
                             .role(role)
                             .userCategory(userCategory)

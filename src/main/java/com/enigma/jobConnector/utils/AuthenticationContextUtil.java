@@ -53,7 +53,7 @@ public class AuthenticationContextUtil {
         if (currentUser == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         }
-        if (!UserRole.ROLE_ADMIN.equals(currentUser.getRole()) && !UserRole.ROLE_USER.equals(currentUser.getRole())) {
+        if (!UserRole.ROLE_ADMIN.equals(currentUser.getRole()) && !UserRole.ROLE_TRAINEE.equals(currentUser.getRole())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         }
         return currentUser;

@@ -60,12 +60,13 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .name("Super Admin")
                 .email("superadmin@enigma.com")
-                .phoneNumber("+1 213 2423 232")
+                .email("superadmin")
+                .phoneNumber("+62 82342343287432")
                 .role(UserRole.ROLE_SUPER_ADMIN)
                 .password(passwordEncoder.encode("password"))
                 .build();
 
-        if (userRepository.findByUsername("superadmin").isPresent()) {return;}
+        if (userRepository.findByEmail("superadmin").isPresent()) {return;}
         userRepository.save(user);
     }
 
@@ -79,14 +80,14 @@ public class UserServiceImpl implements UserService {
             userCategory = userCategoryService.getOne(userRequest.getCategoryId());
         }
 
-        Optional<User> userResult = userRepository.findByEmailOrUsername(userRequest.getEmail(), userRequest.getUsername());
+        Optional<User> userResult = userRepository.findByEmail(userRequest.getEmail());
         if (userResult.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USERNAME_OR_EMAIL_ALREADY_EXIST);
         }
         User user = User.builder()
                 .name(userRequest.getName())
                 .email(userRequest.getEmail())
-                .username(userRequest.getUsername())
+                .phoneNumber(userRequest.getPhoneNumber())
                 .userCategory(userCategory)
                 .role(UserRole.fromDescription(userRequest.getRole()))
                 .password(passwordEncoder.encode(userRequest.getPassword()))
@@ -94,13 +95,6 @@ public class UserServiceImpl implements UserService {
                 .build();
         userRepository.saveAndFlush(user);
         return getUserResponse(user);
-    }
-
-
-    @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USERNAME_NOT_FOUND));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -111,7 +105,7 @@ public class UserServiceImpl implements UserService {
         if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN) && !currentUser.getId().equals(id)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         User user = getOne(id);
         user.setName(userRequest.getName());
-        user.setUsername(userRequest.getUsername());
+        user.setPhoneNumber(userRequest.getPhoneNumber());
         user.setEmail(userRequest.getEmail());
         userRepository.saveAndFlush(user);
         return getUserResponse(user);
@@ -148,13 +142,13 @@ public class UserServiceImpl implements UserService {
         List<FailedImportUserResponse> failedImportedUser = new ArrayList<>();
 
         for (User user : users) {
-            if (userRepository.findByUsernameAndEmail(user.getUsername(), user.getEmail()).isPresent()) {
+            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
                 FailedImportUserResponse failedImportUserResponse = FailedImportUserResponse.builder()
                         .message(String.format(Constant.FAILED_IMPORT_USER_USERNAME_AND_EMAIL_ALREADY_EXIST, user.getUsername(), user.getEmail()))
                         .build();
                 failedImportedUser.add(failedImportUserResponse);
                 failedImportCount++;
-            } else if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            } else if (userRepository.findByEmail(user.getUsername()).isPresent()) {
                 FailedImportUserResponse failedImportUserResponse = FailedImportUserResponse.builder()
                         .message(String.format(Constant.FAILED_IMPORT_USER_USERNAME_ALREADY_EXIST, user.getUsername()))
                         .build();
@@ -250,8 +244,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USER_NOT_FOUND));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USER_NOT_FOUND));
     }
 
     private UserResponse getUserResponse(User user) {
@@ -268,6 +262,7 @@ public class UserServiceImpl implements UserService {
                 .name(user.getName())
                 .username(user.getUsername())
                 .category(category)
+                .phoneNumber(user.getPhoneNumber())
                 .email(user.getEmail())
                 .role(user.getRole().getDescription())
                 .build();
