@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(AuthRequest authRequest) {
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authRequest.getUsername(),
+                        authRequest.getEmail(),
                         authRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authenticate);

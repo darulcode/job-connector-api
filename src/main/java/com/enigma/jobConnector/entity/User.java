@@ -3,7 +3,6 @@ package com.enigma.jobConnector.entity;
 
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.UserRole;
-import com.enigma.jobConnector.constants.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,35 +32,28 @@ public class User implements UserDetails {
     @Column(name = "email", nullable = false, length = 50, unique = true)
     private String email;
 
-    @Column(name = "username", nullable = false, length = 50, unique = true)
-    private String username;
-
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "code")
-    private String code;
+    @Column(name = "phone_number", nullable = false, unique = true)
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private UserRole role;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private UserStatus status;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_category_id")
-    private UserCategory userCategory;
-
-    @OneToMany(mappedBy = "user")
-    private List<NotificationToken> notificationTokens;
-
+    @Column(name = "code")
+    private String code;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role.name()));
         return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return getEmail();
     }
 }

@@ -47,20 +47,20 @@ class AuthServiceImplTest {
     @Test
     void shouldReturnAuthResponseWhenLogin() {
         AuthRequest authRequest = AuthRequest.builder()
-                .username("username")
+                .email("username")
                 .password("password")
                 .build();
 
         User mockUserAccount = User.builder()
                 .id("1")
-                .username("username")
+                .email("email")
                 .role(UserRole.ROLE_ADMIN)
                 .build();
 
         Authentication mockAuthentication = Mockito.mock(Authentication.class);
         Mockito.when(authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authRequest.getUsername(),
+                        authRequest.getEmail(),
                         authRequest.getPassword())
         )).thenReturn(mockAuthentication);
 

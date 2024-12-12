@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .name("Super Admin")
                 .email("superadmin@enigma.com")
-                .username("superadmin")
+                .phoneNumber("+1 213 2423 232")
                 .role(UserRole.ROLE_SUPER_ADMIN)
                 .password(passwordEncoder.encode("password"))
                 .build();
