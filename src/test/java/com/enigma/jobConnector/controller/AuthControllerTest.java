@@ -50,7 +50,7 @@ class AuthControllerTest {
 
         String requestBody = """
             {
-                "username": "username",
+                "email": "username",
                 "password": "password"
             }
             """;
@@ -115,7 +115,7 @@ class AuthControllerTest {
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
-        assertEquals(Constant.OK, response.getMessage());
+        assertEquals(Constant.SUCCESS_LOGOUT, response.getMessage());
 
         Mockito.verify(authService, Mockito.times(1)).logout(mockBearerToken);
     }

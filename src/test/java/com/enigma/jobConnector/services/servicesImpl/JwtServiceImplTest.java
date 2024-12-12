@@ -28,7 +28,7 @@ class JwtServiceImplTest {
     void shouldReturnStringWhenGenerateToken() {
         User mockUserAccount = User.builder()
                 .id("1")
-                .username("username")
+                .email("email")
                 .role(UserRole.ROLE_ADMIN)
                 .build();
 

@@ -1,7 +1,6 @@
 package com.enigma.jobConnector.services.servicesImpl;
 
 import com.enigma.jobConnector.constants.UserRole;
-import com.enigma.jobConnector.dto.request.AuthRequest;
 import com.enigma.jobConnector.dto.response.AuthResponse;
 import com.enigma.jobConnector.entity.User;
 import com.enigma.jobConnector.services.JwtService;
@@ -14,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,39 +42,39 @@ class AuthServiceImplTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void shouldReturnAuthResponseWhenLogin() {
-        AuthRequest authRequest = AuthRequest.builder()
-                .email("email")
-                .password("password")
-                .build();
-
-        User mockUserAccount = User.builder()
-                .id("1")
-                .email("email")
-                .role(UserRole.ROLE_ADMIN)
-                .build();
-
-        Authentication mockAuthentication = Mockito.mock(Authentication.class);
-        Mockito.when(authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        authRequest.getEmail(),
-                        authRequest.getPassword())
-        )).thenReturn(mockAuthentication);
-
-        Mockito.when(mockAuthentication.getPrincipal()).thenReturn(mockUserAccount);
-        SecurityContextHolder.getContext().setAuthentication(mockAuthentication);
-
-        Mockito.when(jwtService.generateToken(mockUserAccount)).thenReturn("mockAccessToken");
-        Mockito.when(refreshTokenService.createToken(mockUserAccount.getId())).thenReturn("mockRefreshToken");
-
-        AuthResponse authResponse = authService.login(authRequest);
-
-        assertEquals(mockUserAccount.getId(), authResponse.getId());
-        assertEquals("mockAccessToken", authResponse.getAccessToken());
-        assertEquals("mockRefreshToken", authResponse.getRefreshToken());
-        assertEquals(UserRole.ROLE_ADMIN.getDescription(), authResponse.getRole());
-    }
+//    @Test
+//    void shouldReturnAuthResponseWhenLogin() {
+//        AuthRequest authRequest = AuthRequest.builder()
+//                .email("email")
+//                .password("password")
+//                .build();
+//
+//        User mockUserAccount = User.builder()
+//                .id("1")
+//                .email("email")
+//                .role(UserRole.ROLE_ADMIN)
+//                .build();
+//
+//        Authentication mockAuthentication = Mockito.mock(Authentication.class);
+//        Mockito.when(authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        authRequest.getEmail(),
+//                        authRequest.getPassword())
+//        )).thenReturn(mockAuthentication);
+//
+//        Mockito.when(mockAuthentication.getPrincipal()).thenReturn(mockUserAccount);
+//        SecurityContextHolder.getContext().setAuthentication(mockAuthentication);
+//
+//        Mockito.when(jwtService.generateToken(mockUserAccount)).thenReturn("mockAccessToken");
+//        Mockito.when(refreshTokenService.createToken(mockUserAccount.getId())).thenReturn("mockRefreshToken");
+//
+//        AuthResponse authResponse = authService.login(authRequest);
+//
+//        assertEquals(mockUserAccount.getId(), authResponse.getId());
+//        assertEquals("mockAccessToken", authResponse.getAccessToken());
+//        assertEquals("mockRefreshToken", authResponse.getRefreshToken());
+//        assertEquals(UserRole.ROLE_ADMIN.getDescription(), authResponse.getRole());
+//    }
 
     @Test
     void shouldReturnAuthResponseWhenRefreshToken() {

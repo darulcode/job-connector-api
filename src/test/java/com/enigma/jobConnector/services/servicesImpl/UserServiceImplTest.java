@@ -34,13 +34,13 @@ class UserServiceImplTest {
         User mockUser = User.builder()
                 .name("Super Admin")
                 .email("superadmin@enigma.com")
-                .username("superadmin")
+                .phoneNumber("+621312321")
                 .role(UserRole.ROLE_SUPER_ADMIN)
                 .password("encodedPassword")
                 .build();
 
         Mockito.when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
-        Mockito.when(userRepository.findByUsername("superadmin")).thenReturn(java.util.Optional.empty());
+        Mockito.when(userRepository.findByEmail("superadmin@enigma.com")).thenReturn(java.util.Optional.empty());
 
         userService.init();
 
@@ -57,7 +57,7 @@ class UserServiceImplTest {
 
     @Test
     void shouldDoNothingWhenInit() {
-        Mockito.when(userRepository.findByUsername("superadmin")).thenReturn(java.util.Optional.of(new User()));
+        Mockito.when(userRepository.findByEmail("superadmin@enigma.com")).thenReturn(java.util.Optional.of(new User()));
 
         userService.init();
 
@@ -68,7 +68,7 @@ class UserServiceImplTest {
     void shouldReturnUserWhenGetOne() {
         User mockUserAccount = User.builder()
                 .id("1")
-                .username("username")
+                .email("superadmin@enigma.com")
                 .role(UserRole.ROLE_ADMIN)
                 .build();
         Mockito.when(userRepository.findById("1")).thenReturn(Optional.of(mockUserAccount));
@@ -85,12 +85,12 @@ class UserServiceImplTest {
         String username = "username";
 
         User mockUser = User.builder()
-                .username(username)
+                .email(username)
                 .password("encodedPassword")
                 .role(UserRole.ROLE_ADMIN)
                 .build();
 
-        Mockito.when(userRepository.findByUsername(username)).thenReturn(Optional.of(mockUser));
+        Mockito.when(userRepository.findByEmail(username)).thenReturn(Optional.of(mockUser));
 
         UserDetails userDetails = userService.loadUserByUsername(username);
 
