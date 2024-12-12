@@ -89,7 +89,7 @@ public class UserController {
     }
 
     @Operation(summary = "Send forgot password to email user")
-    @PostMapping("  ")
+    @PostMapping("/forgot/{email}")
     public ResponseEntity<?> forgotPassword(@PathVariable String email) throws MessagingException, IOException {
         userService.sendForgotPassword(email);
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_SEND_FORGOT_PASSWORD, null);
