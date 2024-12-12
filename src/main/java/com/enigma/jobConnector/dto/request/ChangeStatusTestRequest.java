@@ -1,9 +1,11 @@
 package com.enigma.jobConnector.dto.request;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ChangeStatusTestRequest {
     private String status;
