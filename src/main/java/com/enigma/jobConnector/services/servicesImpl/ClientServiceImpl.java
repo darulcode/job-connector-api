@@ -100,6 +100,7 @@ public class ClientServiceImpl implements ClientService {
         return ClientResponse.builder()
                 .id(client.getId())
                 .name(client.getName())
+                .address(client.getAddress())
                 .build();
     }
 
