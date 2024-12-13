@@ -39,7 +39,6 @@ public class Constant {
     public static final String SUCCESS_FETCHING_USER_CATEGORY="Successfully fetch user category";
     public static final String SUCCESS_DELETE_USER_CATEGORY = "Successfully deleted user category";
     public static final String SUCCESS_SEND_FORGOT_PASSWORD = "Successfully send forgot password";
-    public static final String SUCCESS_IMPORT_USER = "Successfully import user";
 
     public static final String SUCCESS_CREATE_TEST_MESSAGE = "Successfully created test";
     public static final String SUCCESS_FETCH_ALL_CLIENT = "Successfully fetching all clients";
@@ -78,11 +77,11 @@ public class Constant {
     public static final String TEST_STATUS_NOT_FOUND = "Test status not found";
     public static final String INVALID_CREDENTIAL = "Invalid credential";
 
+    public static final String SUCCESS_IMPORT_USER = "Successfully import user";
+    public static final String FAILED_IMPORT_USER = "Failed to import user,";
     public static final String INVALID_EXCEL_FILE = "Please upload a valid excel file";
     public static final String FAILED_PROCESS_EXCEL_FILE = "Failed to process excel file";
-    public static final String FAILED_IMPORT_USER_USERNAME_AND_EMAIL_ALREADY_EXIST = "Failed import user: username %s and email %s already exist.";
-    public static final String FAILED_IMPORT_USER_USERNAME_ALREADY_EXIST = "Failed import user: username %s already exist.";
-    public static final String FAILED_IMPORT_USER_EMAIL_ALREADY_EXIST = "Failed import user: email %s already exist.";
+    public static final String FAILED_IMPORT_USER_EMAIL_ALREADY_EXIST = "On sheet %s row %s failed to import user email %s already exist,";
 
     public static final String SUCCESS_FETCHING_NOTIFICATION = "Successfully fetch notification";
     public static final String SUCCESS_SET_READ_NOTIFICATION = "Notification has been read";
