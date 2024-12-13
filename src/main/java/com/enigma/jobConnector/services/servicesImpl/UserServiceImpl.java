@@ -124,6 +124,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public Page<UserResponse> findAllUser(UserSearchRequest request) {
+        AuthenticationContextUtil.validateCurrentUser();
         Sort sortBy = ShortUtil.parseSort(request.getSortBy());
         if (request.getPage() <= 0) request.setPage(1);
         Pageable pageable = PageRequest.of(request.getPage() - 1, request.getSize(), sortBy);
