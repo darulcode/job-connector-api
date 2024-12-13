@@ -61,12 +61,14 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
                     String phoneNumber = row.getCell(2).getStringCellValue();
                     String password = passwordEncoder.encode(row.getCell(3).getStringCellValue());
                     UserRole role = UserRole.fromDescription(row.getCell(4).getStringCellValue());
-
-                    String categoryName = row.getCell(5).getStringCellValue();
-                    UserCategory userCategory = userCategoryService.getByName(categoryName);
-                    if (userCategory == null) {
-                        userCategoryService.createUserCategory(UserCategoryRequest.builder().name(categoryName).build());
+                    UserCategory userCategory = null;
+                    if (!role.equals(UserRole.ROLE_ADMIN) && !role.equals(UserRole.ROLE_SUPER_ADMIN)) {
+                        String categoryName = row.getCell(5).getStringCellValue();
                         userCategory = userCategoryService.getByName(categoryName);
+                        if (userCategory == null) {
+                            userCategoryService.createUserCategory(UserCategoryRequest.builder().name(categoryName).build());
+                            userCategory = userCategoryService.getByName(categoryName);
+                        }
                     }
 
                     User user = User.builder()
