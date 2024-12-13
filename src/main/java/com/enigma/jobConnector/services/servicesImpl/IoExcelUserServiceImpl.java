@@ -113,17 +113,17 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
             Map<String, List<User>> usersGroupedByUserCategory = userService.findAll()
                     .stream()
                     .collect(Collectors.groupingBy(user ->
-                            user.getUserCategory() != null ? user.getUserCategory().getName() : "Karyawan"));
+                            user.getUserCategory() != null ? user.getUserCategory().getName() : "Others"));
 
             for (Map.Entry<String, List<User>> entry : usersGroupedByUserCategory.entrySet()) {
                 Sheet sheet = workbook.createSheet(entry.getKey());
                 List<User> users = entry.getValue();
 
                 Row headerRow = sheet.createRow(0);
-                headerRow.createCell(0).setCellValue("id");
-                headerRow.createCell(1).setCellValue("name");
-                headerRow.createCell(2).setCellValue("email");
-                headerRow.createCell(3).setCellValue("username");
+                headerRow.createCell(0).setCellValue("name");
+                headerRow.createCell(1).setCellValue("email");
+                headerRow.createCell(2).setCellValue("default_password");
+                headerRow.createCell(3).setCellValue("phone_number");
                 headerRow.createCell(4).setCellValue("role");
                 headerRow.createCell(5).setCellValue("user_category");
 
@@ -133,10 +133,10 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
                         continue;
                     }
                     Row row = sheet.createRow(rowIndex++);
-                    row.createCell(0).setCellValue(user.getId());
-                    row.createCell(1).setCellValue(user.getName());
-                    row.createCell(2).setCellValue(user.getEmail());
-                    row.createCell(3).setCellValue(user.getUsername());
+                    row.createCell(0).setCellValue(user.getName());
+                    row.createCell(1).setCellValue(user.getEmail());
+                    row.createCell(2).setCellValue("password");
+                    row.createCell(3).setCellValue(user.getPhoneNumber());
                     row.createCell(4).setCellValue(user.getRole().getDescription());
 
                     if (user.getUserCategory() != null) {
