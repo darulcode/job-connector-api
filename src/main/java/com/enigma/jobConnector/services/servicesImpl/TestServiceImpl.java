@@ -55,7 +55,7 @@ public class TestServiceImpl implements TestService {
         Client client = clientService.getOne(request.getClientId());
 
         FileTest fileTest = null;
-        if (!file.isEmpty()) {
+        if (file != null) {
             fileTest = fileTestService.createFile(file);
         }
         Test test = Test.builder()
