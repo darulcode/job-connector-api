@@ -12,10 +12,7 @@ import com.enigma.jobConnector.services.UserCategoryService;
 import com.enigma.jobConnector.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,6 +40,8 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.INVALID_EXCEL_FILE);
         }
 
+        String message = "";
+
         try (InputStream inputStream = file.getInputStream()) {
             Workbook workbook = WorkbookFactory.create(inputStream);
             Integer sheetCount = workbook.getNumberOfSheets();
@@ -56,17 +55,32 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
                     Row row = sheet.getRow(i);
                     if (row == null) continue;
 
-                    String name = row.getCell(0).getStringCellValue();
                     String email = row.getCell(1).getStringCellValue();
-                    String phoneNumber = row.getCell(2).getStringCellValue();
-                    String password = passwordEncoder.encode(row.getCell(3).getStringCellValue());
-                    UserRole role = UserRole.fromDescription(row.getCell(4).getStringCellValue());
+                    if (userService.isUserExistByEmail(email)) {
+                        message = message + String.format(Constant.FAILED_IMPORT_USER_EMAIL_ALREADY_EXIST, sheet.getSheetName(), row.getRowNum(), email);
+                        continue;
+                    }
 
-                    String categoryName = row.getCell(5).getStringCellValue();
-                    UserCategory userCategory = userCategoryService.getByName(categoryName);
-                    if (userCategory == null) {
-                        userCategoryService.createUserCategory(UserCategoryRequest.builder().name(categoryName).build());
+                    String name = row.getCell(0).getStringCellValue();
+                    String password = passwordEncoder.encode(row.getCell(2).getStringCellValue());
+                    Cell phoneNumberCell = row.getCell(3);
+                    String phoneNumber = null;
+                    if (phoneNumberCell != null) {
+                        if (phoneNumberCell.getCellType() == CellType.NUMERIC) {
+                            phoneNumber = String.valueOf((long) phoneNumberCell.getNumericCellValue());
+                        } else if (phoneNumberCell.getCellType() == CellType.STRING) {
+                            phoneNumber = phoneNumberCell.getStringCellValue().trim();
+                        }
+                    }
+                    UserRole role = UserRole.fromDescription(row.getCell(4).getStringCellValue());
+                    UserCategory userCategory = null;
+                    if (!role.equals(UserRole.ROLE_ADMIN) && !role.equals(UserRole.ROLE_SUPER_ADMIN)) {
+                        String categoryName = row.getCell(5).getStringCellValue();
                         userCategory = userCategoryService.getByName(categoryName);
+                        if (userCategory == null) {
+                            userCategoryService.createUserCategory(UserCategoryRequest.builder().name(categoryName).build());
+                            userCategory = userCategoryService.getByName(categoryName);
+                        }
                     }
 
                     User user = User.builder()
@@ -82,8 +96,10 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
                     users.add(user);
                 }
             }
-            ImportUserResponse importUserResponse = userService.batchCreate(users);
-            return importUserResponse;
+            if (message.isBlank()) userService.batchCreate(users);
+            return ImportUserResponse.builder()
+                    .message(message)
+                    .build();
         } catch (Exception e) {
             throw new RuntimeException(Constant.FAILED_PROCESS_EXCEL_FILE, e);
         }
@@ -97,17 +113,17 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
             Map<String, List<User>> usersGroupedByUserCategory = userService.findAll()
                     .stream()
                     .collect(Collectors.groupingBy(user ->
-                            user.getUserCategory() != null ? user.getUserCategory().getName() : "Karyawan"));
+                            user.getUserCategory() != null ? user.getUserCategory().getName() : "Others"));
 
             for (Map.Entry<String, List<User>> entry : usersGroupedByUserCategory.entrySet()) {
                 Sheet sheet = workbook.createSheet(entry.getKey());
                 List<User> users = entry.getValue();
 
                 Row headerRow = sheet.createRow(0);
-                headerRow.createCell(0).setCellValue("id");
-                headerRow.createCell(1).setCellValue("name");
-                headerRow.createCell(2).setCellValue("email");
-                headerRow.createCell(3).setCellValue("username");
+                headerRow.createCell(0).setCellValue("name");
+                headerRow.createCell(1).setCellValue("email");
+                headerRow.createCell(2).setCellValue("default_password");
+                headerRow.createCell(3).setCellValue("phone_number");
                 headerRow.createCell(4).setCellValue("role");
                 headerRow.createCell(5).setCellValue("user_category");
 
@@ -117,10 +133,10 @@ public class IoExcelUserServiceImpl implements IoExcelUserService {
                         continue;
                     }
                     Row row = sheet.createRow(rowIndex++);
-                    row.createCell(0).setCellValue(user.getId());
-                    row.createCell(1).setCellValue(user.getName());
-                    row.createCell(2).setCellValue(user.getEmail());
-                    row.createCell(3).setCellValue(user.getUsername());
+                    row.createCell(0).setCellValue(user.getName());
+                    row.createCell(1).setCellValue(user.getEmail());
+                    row.createCell(2).setCellValue("password");
+                    row.createCell(3).setCellValue(user.getPhoneNumber());
                     row.createCell(4).setCellValue(user.getRole().getDescription());
 
                     if (user.getUserCategory() != null) {

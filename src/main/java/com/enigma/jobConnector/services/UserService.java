@@ -21,7 +21,8 @@ public interface UserService extends UserDetailsService {
     UserResponse update(String id, UserRequest userRequest);
     void delete(String id);
     Page<UserResponse> findAllUser(UserSearchRequest userSearchRequest);
-    ImportUserResponse batchCreate(List<User> users);
+    Boolean isUserExistByEmail(String email);
+    void batchCreate(List<User> users);
     List<User> findAll();
     UserResponse getUserDetails(String id);
     UserResponse getSelfUserDetails();

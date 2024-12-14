@@ -10,8 +10,5 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ImportUserResponse {
-    Integer successImportCount;
-    Integer failedImportCount;
-    List<UserResponse> successImportedUser;
-    List<FailedImportUserResponse> failedImportedUser;
+    String message;
 }

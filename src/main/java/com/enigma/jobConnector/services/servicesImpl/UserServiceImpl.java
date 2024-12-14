@@ -135,45 +135,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ImportUserResponse batchCreate(List<User> users) {
-        Integer successImportCount = 0;
-        Integer failedImportCount = 0;
-        List<UserResponse> successImportedUser = new ArrayList<>();
-        List<FailedImportUserResponse> failedImportedUser = new ArrayList<>();
+    public Boolean isUserExistByEmail(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
 
-        for (User user : users) {
-            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                FailedImportUserResponse failedImportUserResponse = FailedImportUserResponse.builder()
-                        .message(String.format(Constant.FAILED_IMPORT_USER_USERNAME_AND_EMAIL_ALREADY_EXIST, user.getUsername(), user.getEmail()))
-                        .build();
-                failedImportedUser.add(failedImportUserResponse);
-                failedImportCount++;
-            } else if (userRepository.findByEmail(user.getUsername()).isPresent()) {
-                FailedImportUserResponse failedImportUserResponse = FailedImportUserResponse.builder()
-                        .message(String.format(Constant.FAILED_IMPORT_USER_USERNAME_ALREADY_EXIST, user.getUsername()))
-                        .build();
-                failedImportedUser.add(failedImportUserResponse);
-                failedImportCount++;
-            } else if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-                FailedImportUserResponse failedImportUserResponse = FailedImportUserResponse.builder()
-                        .message(String.format(Constant.FAILED_IMPORT_USER_EMAIL_ALREADY_EXIST, user.getEmail()))
-                        .build();
-                failedImportedUser.add(failedImportUserResponse);
-                failedImportCount++;
-            } else {
-                UserResponse userResponse = getUserResponse(userRepository.save(user));
-                successImportedUser.add(userResponse);
-                successImportCount++;
-            }
-        }
-
-        ImportUserResponse importUserResponse = ImportUserResponse.builder()
-                .successImportCount(successImportCount)
-                .failedImportCount(failedImportCount)
-                .successImportedUser(successImportedUser)
-                .failedImportedUser(failedImportedUser)
-                .build();
-        return importUserResponse;
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void batchCreate(List<User> users) {
+        userRepository.saveAll(users);
     }
 
 
