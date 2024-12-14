@@ -84,7 +84,7 @@ public class TestDetailServiceImpl implements TestDetailService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         }
         FileSubmissionTest fileSubmissionTest;
-        if (!file.isEmpty()) {
+        if (file != null) {
             fileSubmissionTest = fileSubmissionService.createFileSubmission(file, testDetail);
             testDetail.setFileSubmissionTest(fileSubmissionTest);
             fileSubmissionTest.setTestDetail(testDetail);
