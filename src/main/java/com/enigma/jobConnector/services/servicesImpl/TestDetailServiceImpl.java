@@ -88,9 +88,13 @@ public class TestDetailServiceImpl implements TestDetailService {
             fileSubmissionTest = fileSubmissionService.createFileSubmission(file, testDetail);
             testDetail.setFileSubmissionTest(fileSubmissionTest);
             fileSubmissionTest.setTestDetail(testDetail);
+        } else {
+            testDetail.setFileSubmissionTest(null);
         }
         if (!request.getSubmissionText().isEmpty()) {
             testDetail.setSubmissionText(request.getSubmissionText());
+        } else {
+            testDetail.setSubmissionText(null);
         }
         testDetail.setStatus(SubmissionStatus.SUBMITTED);
         testDetailRepository.saveAndFlush(testDetail);
