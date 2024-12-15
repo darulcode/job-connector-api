@@ -1,6 +1,7 @@
 package com.enigma.jobConnector.services.servicesImpl;
 
 import com.enigma.jobConnector.constants.Constant;
+import com.enigma.jobConnector.constants.EntityStatus;
 import com.enigma.jobConnector.constants.TestStatus;
 import com.enigma.jobConnector.dto.request.TestRequest;
 import com.enigma.jobConnector.dto.request.TestSearchRequest;
@@ -65,6 +66,7 @@ public class TestServiceImpl implements TestService {
                 .user(user)
                 .client(client)
                 .status(TestStatus.PENDING)
+                .isDeleted(EntityStatus.AKTIVE)
                 .build();
         testRepository.saveAndFlush(test);
         if (fileTest != null) fileTest.setTest(test);
@@ -90,7 +92,8 @@ public class TestServiceImpl implements TestService {
     @Override
     public void deleteTest(String id) {
         AuthenticationContextUtil.validateCurrentUserRoleAdmin();
-        testRepository.delete(getOne(id));
+        Test test = getOne(id);
+        test.setIsDeleted(EntityStatus.INACTIVE);
     }
 
     @Transactional(rollbackFor = Exception.class)

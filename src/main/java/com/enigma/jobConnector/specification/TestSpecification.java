@@ -1,5 +1,6 @@
 package com.enigma.jobConnector.specification;
 
+import com.enigma.jobConnector.constants.EntityStatus;
 import com.enigma.jobConnector.dto.request.TestSearchRequest;
 import com.enigma.jobConnector.entity.Test;
 import jakarta.persistence.criteria.Predicate;
@@ -25,6 +26,7 @@ public class TestSpecification {
                 );
                 predicates.add(queryPredicate);
             }
+            predicates.add(criteriaBuilder.equal(root.get("isDeleted"), EntityStatus.AKTIVE));
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };

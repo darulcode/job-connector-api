@@ -2,13 +2,11 @@ package com.enigma.jobConnector.services.servicesImpl;
 
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.UserRole;
-import com.enigma.jobConnector.constants.UserStatus;
+import com.enigma.jobConnector.constants.EntityStatus;
 import com.enigma.jobConnector.dto.request.ChangePasswordRequest;
 import com.enigma.jobConnector.dto.request.ForgotPasswordRequest;
 import com.enigma.jobConnector.dto.request.UserRequest;
 import com.enigma.jobConnector.dto.request.UserSearchRequest;
-import com.enigma.jobConnector.dto.response.FailedImportUserResponse;
-import com.enigma.jobConnector.dto.response.ImportUserResponse;
 import com.enigma.jobConnector.dto.response.UserCategoryResponse;
 import com.enigma.jobConnector.dto.response.UserResponse;
 import com.enigma.jobConnector.entity.User;
@@ -38,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -90,7 +87,7 @@ public class UserServiceImpl implements UserService {
                 .userCategory(userCategory)
                 .role(UserRole.fromDescription(userRequest.getRole()))
                 .password(passwordEncoder.encode(userRequest.getPassword()))
-                .status(UserStatus.AKTIVE)
+                .status(EntityStatus.AKTIVE)
                 .build();
         userRepository.saveAndFlush(user);
         return getUserResponse(user);
@@ -117,7 +114,7 @@ public class UserServiceImpl implements UserService {
         if (currentUser == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         if (!currentUser.getRole().equals(UserRole.ROLE_SUPER_ADMIN) ) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         User user = getOne(id);
-        user.setStatus(UserStatus.INACTIVE);
+        user.setStatus(EntityStatus.INACTIVE);
         userRepository.saveAndFlush(user);
     }
 

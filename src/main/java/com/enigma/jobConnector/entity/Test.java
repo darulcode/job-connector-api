@@ -1,6 +1,7 @@
 package com.enigma.jobConnector.entity;
 
 import com.enigma.jobConnector.constants.Constant;
+import com.enigma.jobConnector.constants.EntityStatus;
 import com.enigma.jobConnector.constants.TestStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -50,6 +51,9 @@ public class Test {
     @JoinColumn(name = "user_bd_id", nullable = false)
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "isDeleted")
+    private EntityStatus isDeleted;
 
     @OneToMany(mappedBy = "test")
     private List<TestDetail> userDetails;
