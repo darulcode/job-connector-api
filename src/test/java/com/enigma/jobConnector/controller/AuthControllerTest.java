@@ -100,6 +100,40 @@ class AuthControllerTest {
     }
 
     @Test
+    void shouldReturn200WhenRefreshTokenMobile() throws Exception {
+        String mockRefreshToken = "mockRefreshToken";
+        AuthResponse mockAuthResponse = AuthResponse.builder()
+                .id("1")
+                .accessToken("mockAccessToken")
+                .refreshToken("mockRefreshToken")
+                .role("Admin")
+                .build();
+
+        Mockito.when(authService.refreshToken(mockRefreshToken)).thenReturn(mockAuthResponse);
+
+        String requestBody = """
+            {
+                "refreshToken": "mockRefreshToken"
+            }
+            """;
+
+        var result = mockMvc.perform(MockMvcRequestBuilders.post(Constant.AUTH_API + "/refresh-token-mobile")
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        CommonResponse<AuthResponse> response = new ObjectMapper().readValue(jsonResponse, new TypeReference<>() {});
+
+        assertNotNull(response);
+        assertEquals(mockAuthResponse.getId(), response.getData().getId());
+        assertEquals(mockAuthResponse.getAccessToken(), response.getData().getAccessToken());
+        assertEquals(mockAuthResponse.getRefreshToken(), response.getData().getRefreshToken());
+        assertEquals(mockAuthResponse.getRole(), response.getData().getRole());
+    }
+
+    @Test
     @WithMockUser
     void shouldReturn200WhenLogout() throws Exception {
         String mockBearerToken = "Bearer mockBearerToken";
