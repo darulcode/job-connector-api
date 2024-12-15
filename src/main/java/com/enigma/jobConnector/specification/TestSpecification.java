@@ -20,8 +20,8 @@ public class TestSpecification {
                 Predicate queryPredicate = criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + request.getQuery().toLowerCase() + "%"),
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("status")), "%" + request.getQuery().toLowerCase() + "%"),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("client")), "%" + request.getQuery().toLowerCase() + "%"),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("user")), "%" + request.getQuery().toLowerCase() + "%")
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("client").get("name")), "%" + request.getQuery().toLowerCase() + "%"),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("name")), "%" + request.getQuery().toLowerCase() + "%")
                 );
                 predicates.add(queryPredicate);
             }
