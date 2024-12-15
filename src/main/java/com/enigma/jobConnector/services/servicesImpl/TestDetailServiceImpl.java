@@ -39,8 +39,8 @@ public class TestDetailServiceImpl implements TestDetailService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public TestDetail create(TestDetailRequest testDetails, Test test) {
-        User user = userService.getOne(testDetails.getUserId());
+    public TestDetail create(String testDetails, Test test) {
+        User user = userService.getOne(testDetails);
         TestDetail testDetail = TestDetail.builder()
                 .user(user)
                 .test(test)
@@ -124,7 +124,7 @@ public class TestDetailServiceImpl implements TestDetailService {
             TestDetailRequest userRequest = TestDetailRequest.builder()
                     .userId(userId)
                     .build();
-            create(userRequest, test);
+            create(userRequest.getUserId(), test);
         }
     }
 

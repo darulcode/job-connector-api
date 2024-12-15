@@ -64,19 +64,13 @@ public class TestController {
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy", required = false) String sortBy,
-            @RequestParam(name = "name", required = false) String query,
-            @RequestParam(name = "admin", required = false) String admin,
-            @RequestParam(name = "status", required = false) String status,
-            @RequestParam(name = "client", required = false) String client
+            @RequestParam(name = "name", required = false) String query
     ) {
         TestSearchRequest request = TestSearchRequest.builder()
                 .query(query)
                 .sortBy(sortBy)
                 .size(size)
                 .page(page)
-                .admin(admin)
-                .status(status)
-                .client(client)
                 .build();
         Page<TestResponse> responses = testService.getAll(request);
         return ResponseUtil.buildResponsePage(HttpStatus.OK, Constant.SUCCESS_FETCHING_ALL_TEST, responses);

@@ -16,27 +16,12 @@ public class TestSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (StringUtils.hasText(request.getStatus())) {
-                Predicate statusPredicate = criteriaBuilder.equal(root.get("status"), request.getStatus());
-                predicates.add(statusPredicate);
-            }
-
-            if (StringUtils.hasText(request.getAdmin())) {
-                Predicate adminPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("name")),
-                        "%" + request.getAdmin().toLowerCase() + "%");
-                predicates.add(adminPredicate);
-            }
-
-            if (StringUtils.hasText(request.getClient())) {
-                Predicate clientPredicate = criteriaBuilder.like(criteriaBuilder.lower(root.get("client").get("name")),
-                        "%" + request.getClient().toLowerCase() + "%");
-                predicates.add(clientPredicate);
-            }
-
             if (StringUtils.hasText(request.getQuery())) {
                 Predicate queryPredicate = criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + request.getQuery().toLowerCase() + "%"),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("status")), "%" + request.getQuery().toLowerCase() + "%")
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("status")), "%" + request.getQuery().toLowerCase() + "%"),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("client")), "%" + request.getQuery().toLowerCase() + "%"),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("user")), "%" + request.getQuery().toLowerCase() + "%")
                 );
                 predicates.add(queryPredicate);
             }

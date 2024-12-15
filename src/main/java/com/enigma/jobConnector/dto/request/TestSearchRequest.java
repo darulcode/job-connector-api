@@ -13,7 +13,4 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class TestSearchRequest extends PagingAndShortingRequest{
     private String query;
-    private String status;
-    private String admin;
-    private String client;
 }

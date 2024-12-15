@@ -14,6 +14,6 @@ public class TestRequest {
     private LocalDateTime deadlineAt;
     private String clientId;
     private String description;
-    private List<TestDetailRequest> details;
+    private List<String> details;
 
 }

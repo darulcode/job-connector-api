@@ -1,6 +1,5 @@
 package com.enigma.jobConnector.services;
 
-import com.enigma.jobConnector.dto.request.TestDetailRequest;
 import com.enigma.jobConnector.dto.request.UpdateStatusSubmissionRequest;
 import com.enigma.jobConnector.dto.request.UpdateTestDetailRequest;
 import com.enigma.jobConnector.dto.response.TestDetailResponse;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface TestDetailService {
-    TestDetail create(TestDetailRequest testDetails, Test test);
+    TestDetail create(String testDetails, Test test);
     List<TestDetailResponse> findByTestId(String testId);
     TestDetail getOne(String id);
     TestResponse findById(String id);

@@ -108,7 +108,7 @@ public class TestServiceImpl implements TestService {
                 notificationService.createBatchNotificationTest(client, test);
             }
         }
-        request.getDetails().forEach(trainee -> testDetailService.addTrainee(test, trainee.getUserId()));
+        request.getDetails().forEach(trainee -> testDetailService.addTrainee(test, trainee));
         test.setDeadlineAt(request.getDeadlineAt());
         test.setDescription(request.getDescription());
         test.setClient(clientService.getOne(request.getClientId()));
