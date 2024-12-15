@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
         ),
         servers = {
                 @io.swagger.v3.oas.annotations.servers.Server(
-                        url = "https://localhost:8080/",
+                        url = "https://enigjob.my.id/",
                         description = "Ngrok HTTPS Server"
                 )
         }
