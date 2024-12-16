@@ -52,4 +52,8 @@ public class ErrorController {
         return ResponseUtil.buildResponse(HttpStatus.BAD_REQUEST, e.getMessage(), null);
     }
 
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<?> handlingOthersException(Exception e) {
+        return ResponseUtil.buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null);
+    }
 }
