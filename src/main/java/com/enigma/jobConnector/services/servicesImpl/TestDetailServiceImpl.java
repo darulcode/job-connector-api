@@ -84,16 +84,12 @@ public class TestDetailServiceImpl implements TestDetailService {
         if (!currentUser.getId().equals(testDetail.getUser().getId())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         }
-        log.info("isi dari resquest, {}", request);
         FileSubmissionTest fileSubmissionTest;
         if (file != null) {
-            log.info("Mencoba Menambahkan file");
             fileSubmissionTest = fileSubmissionService.createFileSubmission(file, testDetail);
             testDetail.setFileSubmissionTest(fileSubmissionTest);
             fileSubmissionTest.setTestDetail(testDetail);
-            log.info("Berhasil Menambahkan file");
         } else {
-            log.info("File tidak ada");
             testDetail.setFileSubmissionTest(null);
         }
         if (!request.getSubmissionText().isEmpty()) {
@@ -101,7 +97,6 @@ public class TestDetailServiceImpl implements TestDetailService {
         } else {
             testDetail.setSubmissionText(null);
         }
-        log.info("Memasuki set status");
         testDetail.setStatus(SubmissionStatus.SUBMITTED);
         testDetailRepository.saveAndFlush(testDetail);
         return getTestDetailResponse(testDetail);
