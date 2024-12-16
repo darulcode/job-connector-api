@@ -87,10 +87,13 @@ public class TestDetailServiceImpl implements TestDetailService {
         log.info("isi dari resquest, {}", request);
         FileSubmissionTest fileSubmissionTest;
         if (file != null) {
+            log.info("Mencoba Menambahkan file");
             fileSubmissionTest = fileSubmissionService.createFileSubmission(file, testDetail);
             testDetail.setFileSubmissionTest(fileSubmissionTest);
             fileSubmissionTest.setTestDetail(testDetail);
+            log.info("Berhasil Menambahkan file");
         } else {
+            log.info("File tidak ada");
             testDetail.setFileSubmissionTest(null);
         }
         if (!request.getSubmissionText().isEmpty()) {
