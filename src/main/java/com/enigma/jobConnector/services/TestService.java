@@ -3,6 +3,7 @@ package com.enigma.jobConnector.services;
 import com.enigma.jobConnector.dto.request.TestRequest;
 import com.enigma.jobConnector.dto.request.TestSearchRequest;
 import com.enigma.jobConnector.dto.response.TestResponse;
+import com.enigma.jobConnector.dto.response.ZipFileResponse;
 import com.enigma.jobConnector.entity.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,4 +18,5 @@ public interface TestService {
     TestResponse updateTest(String id, TestRequest test, MultipartFile file) throws IOException;
     void changeTestStatus(String id, String status);
     TestResponse findById(String id);
+    ZipFileResponse getZipFromTestId(String testId) throws IOException;
 }

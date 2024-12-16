@@ -6,17 +6,19 @@ import com.enigma.jobConnector.dto.request.ChangeStatusTestRequest;
 import com.enigma.jobConnector.dto.request.TestRequest;
 import com.enigma.jobConnector.dto.request.TestSearchRequest;
 import com.enigma.jobConnector.dto.response.TestResponse;
+import com.enigma.jobConnector.dto.response.ZipFileResponse;
 import com.enigma.jobConnector.services.TestService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @SecurityRequirement(name = "Bearer Authentication")
 @RestController
@@ -88,5 +90,17 @@ public class TestController {
     public ResponseEntity<?> delete(@PathVariable("id") String id) {
         testService.deleteTest(id);
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_DELETE_TEST, null);
+    }
+
+    @Operation(summary = "Get file zip from submission text trainee")
+    @GetMapping("/file/{id}")
+    public ResponseEntity<?> getFileZip(@PathVariable String id) throws IOException {
+        ZipFileResponse zipFileResponse = testService.getZipFromTestId(id);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDisposition(ContentDisposition.attachment().filename(zipFileResponse.getFileName()).build());
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(zipFileResponse.getZipContent());
     }
 }

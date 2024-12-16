@@ -38,7 +38,6 @@ public class FileServiceImpl implements FileService {
         if (file == null || file.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File must not be empty");
         }
-
         String mediaType;
         String fileExtension = "";
         Map<String, Object> uploadResponse;
@@ -79,8 +78,8 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public GetFileResponse getFileFromCloudinary(String publicId) throws IOException {
-        File file = getOne(publicId);
+    public GetFileResponse getFileFromCloudinary(String id) throws IOException {
+        File file = getOne(id);
 
         if (file == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");

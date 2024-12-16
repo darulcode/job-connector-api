@@ -17,7 +17,7 @@ public class File {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(name= "name", nullable = false)
+    @Column(name= "name")
     private String name;
 
     @Column(name = "public_id", unique = true, nullable = false)

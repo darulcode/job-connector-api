@@ -21,4 +21,5 @@ public interface TestDetailService {
     TestDetailResponse updateStatusSubmission(String id, UpdateStatusSubmissionRequest request);
     void addTrainee(Test test, String userId);
     List<TestDetail> listFindByTestId(String testId);
+
 }

@@ -8,15 +8,14 @@ import com.enigma.jobConnector.dto.request.TestSearchRequest;
 import com.enigma.jobConnector.dto.response.FileTestResponse;
 import com.enigma.jobConnector.dto.response.TestDetailResponse;
 import com.enigma.jobConnector.dto.response.TestResponse;
-import com.enigma.jobConnector.entity.Client;
-import com.enigma.jobConnector.entity.FileTest;
-import com.enigma.jobConnector.entity.Test;
-import com.enigma.jobConnector.entity.User;
+import com.enigma.jobConnector.dto.response.ZipFileResponse;
+import com.enigma.jobConnector.entity.*;
 import com.enigma.jobConnector.repository.TestRepository;
 import com.enigma.jobConnector.services.*;
 import com.enigma.jobConnector.specification.TestSpecification;
 import com.enigma.jobConnector.utils.AuthenticationContextUtil;
 import com.enigma.jobConnector.utils.ShortUtil;
+import com.enigma.jobConnector.utils.ZipUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,7 +32,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,7 @@ public class TestServiceImpl implements TestService {
     private final FileTestService fileTestService;
     private final TestDetailService testDetailService;
     private final NotificationService notificationService;
+    private final FileService fileService;
 
     @Override
     public Test getOne(String id) {
@@ -138,6 +140,31 @@ public class TestServiceImpl implements TestService {
     public TestResponse findById(String id) {
         updateStatusIfPastDeadline();
         return getTestResponse(getOne(id));
+    }
+
+    @Override
+    public ZipFileResponse getZipFromTestId(String testId) throws IOException {
+        Test test = getOne(testId);
+        Map<String, byte[]> zipEntries = new HashMap<>();
+        test.getUserDetails().forEach(testDetail -> {
+            FileSubmissionTest fileSubmissionTest = testDetail.getFileSubmissionTest();
+            if (fileSubmissionTest != null) {
+                String fileId = fileSubmissionTest.getFile().getId();
+                byte[] fileBytes = null;
+                try {
+                    fileBytes = fileService.getFileFromCloudinary(fileId).getFile();
+                } catch (IOException e) {
+                    fileBytes = null;
+                }
+                String fileName = testDetail.getUser().getName() + "_" + testDetail.getUser().getUserCategory().getName()+"." +fileSubmissionTest.getFile().getMediaType().split("/")[1];
+                zipEntries.put(fileName, fileBytes);
+            }
+        });
+
+        return ZipFileResponse.builder()
+                .zipContent(ZipUtil.createZip(zipEntries))
+                .fileName(test.getClient().getName()+"_"+test.getUser().getName()+".zip")
+                .build();
     }
 
     private TestResponse getTestResponse(Test test) {

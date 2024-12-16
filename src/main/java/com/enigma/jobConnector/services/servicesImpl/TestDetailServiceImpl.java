@@ -14,6 +14,7 @@ import com.enigma.jobConnector.entity.Test;
 import com.enigma.jobConnector.entity.TestDetail;
 import com.enigma.jobConnector.entity.User;
 import com.enigma.jobConnector.repository.TestDetailRepository;
+import com.enigma.jobConnector.services.FileService;
 import com.enigma.jobConnector.services.FileSubmissionService;
 import com.enigma.jobConnector.services.TestDetailService;
 import com.enigma.jobConnector.services.UserService;
@@ -41,6 +42,7 @@ public class TestDetailServiceImpl implements TestDetailService {
     private final TestDetailRepository testDetailRepository;
     private final UserService userService;
     private final FileSubmissionService fileSubmissionService;
+    private final FileService fileService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -141,6 +143,8 @@ public class TestDetailServiceImpl implements TestDetailService {
     }
 
 
+
+
     private TestDetailResponse getTestDetailResponse(TestDetail testDetail) {
         String fileSubmission = null;
         String fileName = null;
@@ -186,7 +190,6 @@ public class TestDetailServiceImpl implements TestDetailService {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Jakarta"));
         TestStatus currentStatus = TestStatus.PENDING;
         TestStatus newStatus = TestStatus.AWAITING;
-        log.info("waktu sekarang adalah : {}", now);
 
         testDetailRepository.updateTestStatusToAwaiting(newStatus, now, currentStatus);
     }
