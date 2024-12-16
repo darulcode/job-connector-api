@@ -30,6 +30,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -182,7 +183,7 @@ public class TestDetailServiceImpl implements TestDetailService {
 
     @Transactional
     public void updateExpiredTestsToAwaiting() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Jakarta"));
         TestStatus currentStatus = TestStatus.PENDING;
         TestStatus newStatus = TestStatus.AWAITING;
         log.info("waktu sekarang adalah : {}", now);

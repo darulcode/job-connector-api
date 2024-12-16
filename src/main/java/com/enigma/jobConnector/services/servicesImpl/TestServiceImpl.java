@@ -32,6 +32,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -162,7 +163,7 @@ public class TestServiceImpl implements TestService {
 
     @Transactional(rollbackFor = Exception.class)
     public void updateStatusIfPastDeadline() {
-        testRepository.updateStatusToAwaiting(TestStatus.AWAITING, LocalDateTime.now(), TestStatus.PENDING);
+        testRepository.updateStatusToAwaiting(TestStatus.AWAITING, LocalDateTime.now(ZoneId.of("Asia/Jakarta")), TestStatus.PENDING);
     }
 
 
