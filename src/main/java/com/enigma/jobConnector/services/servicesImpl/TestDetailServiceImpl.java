@@ -2,6 +2,7 @@ package com.enigma.jobConnector.services.servicesImpl;
 
 import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.constants.SubmissionStatus;
+import com.enigma.jobConnector.constants.TestStatus;
 import com.enigma.jobConnector.dto.request.TestDetailRequest;
 import com.enigma.jobConnector.dto.request.UpdateStatusSubmissionRequest;
 import com.enigma.jobConnector.dto.request.UpdateTestDetailRequest;
@@ -16,9 +17,11 @@ import com.enigma.jobConnector.repository.TestDetailRepository;
 import com.enigma.jobConnector.services.FileSubmissionService;
 import com.enigma.jobConnector.services.TestDetailService;
 import com.enigma.jobConnector.services.UserService;
+import com.enigma.jobConnector.specification.TestDetailSpecification;
 import com.enigma.jobConnector.utils.AuthenticationContextUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,8 +74,10 @@ public class TestDetailServiceImpl implements TestDetailService {
     @Override
     public List<TestResponse> findAllTestByUser() {
         AuthenticationContextUtil.validateCurrentUser();
+        updateExpiredTestsToAwaiting();
         User currentUser = AuthenticationContextUtil.getCurrentUser();
-        List<TestDetail> testDetails = testDetailRepository.findAllByUserId(currentUser.getId());
+        Specification<TestDetail> specification = TestDetailSpecification.getSpecification(currentUser.getId());
+        List<TestDetail> testDetails = testDetailRepository.findAll(specification );
         return testDetails.stream().map(this::getTestResponse).toList();
     }
 
@@ -79,7 +85,6 @@ public class TestDetailServiceImpl implements TestDetailService {
     @Override
     public TestDetailResponse submitSubmission(String id, UpdateTestDetailRequest request, MultipartFile file) throws IOException {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
-        log.info("Success masuk ke submit submission: {}", currentUser.getId());
         TestDetail testDetail = getOne(id);
         if (!currentUser.getId().equals(testDetail.getUser().getId())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
@@ -174,4 +179,14 @@ public class TestDetailServiceImpl implements TestDetailService {
                 .testDetail(List.of(testDetailResponse))
                 .build();
     }
+
+    @Transactional
+    public void updateExpiredTestsToAwaiting() {
+        LocalDateTime now = LocalDateTime.now();
+        TestStatus currentStatus = TestStatus.PENDING;
+        TestStatus newStatus = TestStatus.AWAITING;
+
+        testDetailRepository.updateTestStatusToAwaiting(newStatus, now, currentStatus);
+    }
+
 }

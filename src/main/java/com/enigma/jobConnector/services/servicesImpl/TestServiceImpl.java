@@ -162,8 +162,6 @@ public class TestServiceImpl implements TestService {
 
     @Transactional(rollbackFor = Exception.class)
     public void updateStatusIfPastDeadline() {
-        log.info("Memasuki update status if past deadline");
-        log.info(LocalDateTime.now().toString());
         testRepository.updateStatusToAwaiting(TestStatus.AWAITING, LocalDateTime.now(), TestStatus.PENDING);
     }
 
