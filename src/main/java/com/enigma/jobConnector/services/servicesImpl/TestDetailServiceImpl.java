@@ -185,6 +185,7 @@ public class TestDetailServiceImpl implements TestDetailService {
         LocalDateTime now = LocalDateTime.now();
         TestStatus currentStatus = TestStatus.PENDING;
         TestStatus newStatus = TestStatus.AWAITING;
+        log.info("waktu sekarang adalah : {}", now);
 
         testDetailRepository.updateTestStatusToAwaiting(newStatus, now, currentStatus);
     }
