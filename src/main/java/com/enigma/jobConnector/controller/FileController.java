@@ -31,16 +31,28 @@ public class FileController {
     public ResponseEntity<?> getFile(@PathVariable String id) throws IOException {
         GetFileResponse response = fileService.getFileFromCloudinary(id);
         HttpHeaders headers = new HttpHeaders();
-        if (!response.getMediaType().split("/")[1].equals("image")) {
+
+        String mediaType = response.getMediaType();
+        String fileName = response.getFileName();
+
+        String subtype = mediaType.split("/")[1];
+        if (subtype.equalsIgnoreCase("pdf")) {
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", fileName);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(response.getFile());
+        } else if (!subtype.equalsIgnoreCase("image")) {
             headers.setContentType(org.springframework.http.MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
-            headers.setContentDispositionFormData("attachment", response.getFileName());
+            headers.setContentDispositionFormData("attachment", fileName);
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(response.getFile());
         } else {
             return ResponseEntity.ok()
-                    .contentType(MediaType.valueOf(response.getMediaType()))
-                    .body(response);
+                    .contentType(org.springframework.http.MediaType.valueOf(mediaType))
+                    .body(response.getFile());
         }
     }
+
 }
