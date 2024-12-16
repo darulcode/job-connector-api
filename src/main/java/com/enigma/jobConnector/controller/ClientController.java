@@ -8,6 +8,7 @@ import com.enigma.jobConnector.dto.response.ClientResponse;
 import com.enigma.jobConnector.services.ClientService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@SecurityRequirement(name = "Bearer Authentication")
 @RestController
 @RequestMapping(Constant.CLIENT_API)
 @RequiredArgsConstructor

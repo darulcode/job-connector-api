@@ -9,6 +9,7 @@ import com.enigma.jobConnector.dto.response.UserResponse;
 import com.enigma.jobConnector.services.UserService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+@SecurityRequirement(name = "Bearer Authentication")
 @RestController
 @RequestMapping(Constant.USER_API)
 @RequiredArgsConstructor

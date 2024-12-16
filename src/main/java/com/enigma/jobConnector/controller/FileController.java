@@ -4,6 +4,7 @@ import com.enigma.jobConnector.constants.Constant;
 import com.enigma.jobConnector.dto.response.GetFileResponse;
 import com.enigma.jobConnector.services.FileService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
+@SecurityRequirement(name = "Bearer Authentication")
 @RestController
 @RequestMapping(Constant.FILE_API)
 @RequiredArgsConstructor

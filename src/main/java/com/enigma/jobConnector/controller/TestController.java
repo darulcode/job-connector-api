@@ -9,6 +9,7 @@ import com.enigma.jobConnector.dto.response.TestResponse;
 import com.enigma.jobConnector.services.TestService;
 import com.enigma.jobConnector.utils.ResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@SecurityRequirement(name = "Bearer Authentication")
 @RestController
 @RequestMapping(Constant.TEST_API)
 @RequiredArgsConstructor

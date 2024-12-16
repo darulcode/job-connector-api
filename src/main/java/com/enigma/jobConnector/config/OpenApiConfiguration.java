@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
                 title = "Enigma Job Connector",
                 version = "1.0",
                 contact = @Contact(
-                        name = "jobCOnnector",
-                        url = "https://enigjob.com"
+                        name = "jobConnector",
+                        url = "https://enigjob.my.id"
                 )
         ),
         servers = {
