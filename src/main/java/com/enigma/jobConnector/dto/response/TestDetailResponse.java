@@ -16,4 +16,5 @@ public class TestDetailResponse {
     private String status;
     private String submissionText;
     private String fileSubmission;
+    private String fileName;
 }

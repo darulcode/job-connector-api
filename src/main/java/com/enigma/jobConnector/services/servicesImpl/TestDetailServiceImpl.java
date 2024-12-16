@@ -136,8 +136,10 @@ public class TestDetailServiceImpl implements TestDetailService {
 
     private TestDetailResponse getTestDetailResponse(TestDetail testDetail) {
         String fileSubmission = null;
+        String fileName = null;
         if (testDetail.getFileSubmissionTest() != null) {
             fileSubmission = "/api/file/"+testDetail.getFileSubmissionTest().getFile().getId();
+            fileName = testDetail.getFileSubmissionTest().getFile().getName();
         }
         return TestDetailResponse.builder()
                 .id(testDetail.getId())
@@ -147,6 +149,7 @@ public class TestDetailServiceImpl implements TestDetailService {
                 .status(testDetail.getStatus().getDescription())
                 .submissionText(testDetail.getSubmissionText())
                 .fileSubmission(fileSubmission)
+                .fileName(fileName)
                 .build();
     }
 
