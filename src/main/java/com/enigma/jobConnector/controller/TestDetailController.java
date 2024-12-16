@@ -42,7 +42,7 @@ public class TestDetailController {
     @PostMapping("/{id}")
     public ResponseEntity<?> postTestDetail(@PathVariable String id,
                                             @RequestPart(name = "file", required = false) MultipartFile multipartFiles,
-                                            @RequestPart(name = "test") String request) {
+                                            @RequestPart(name = "test", required = false) String request) {
         try {
             UpdateTestDetailRequest testDetailRequest = objectMapper.readValue(request, UpdateTestDetailRequest.class);
             TestDetailResponse testDetailResponse = testDetailService.submitSubmission(id, testDetailRequest, multipartFiles);

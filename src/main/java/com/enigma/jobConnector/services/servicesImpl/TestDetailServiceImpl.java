@@ -79,10 +79,12 @@ public class TestDetailServiceImpl implements TestDetailService {
     @Override
     public TestDetailResponse submitSubmission(String id, UpdateTestDetailRequest request, MultipartFile file) throws IOException {
         User currentUser = AuthenticationContextUtil.getCurrentUser();
+        log.info("Success masuk ke submit submission: {}", currentUser.getId());
         TestDetail testDetail = getOne(id);
         if (!currentUser.getId().equals(testDetail.getUser().getId())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, Constant.UNAUTHORIZED_MESSAGE);
         }
+        log.info("isi dari resquest, {}", request);
         FileSubmissionTest fileSubmissionTest;
         if (file != null) {
             fileSubmissionTest = fileSubmissionService.createFileSubmission(file, testDetail);
@@ -96,6 +98,7 @@ public class TestDetailServiceImpl implements TestDetailService {
         } else {
             testDetail.setSubmissionText(null);
         }
+        log.info("Memasuki set status");
         testDetail.setStatus(SubmissionStatus.SUBMITTED);
         testDetailRepository.saveAndFlush(testDetail);
         return getTestDetailResponse(testDetail);
