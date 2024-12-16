@@ -38,21 +38,32 @@ public class FileServiceImpl implements FileService {
         if (file == null || file.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File must not be empty");
         }
-        String mediaType;
-        String fileExtension = "";
+
         Map<String, Object> uploadResponse;
+        String mediaType = "raw";
+        String fileExtension = "";
 
         String originalFilename = file.getOriginalFilename();
         if (originalFilename != null && originalFilename.contains(".")) {
-            fileExtension = originalFilename.substring(originalFilename.lastIndexOf('.') + 1);
+            fileExtension = originalFilename.substring(originalFilename.lastIndexOf('.') + 1).toLowerCase();
         }
 
-        if (file.getContentType() != null && file.getContentType().startsWith("image")) {
-            uploadResponse = cloudinaryService.uploadImage(file);
-            mediaType = "image";
+        String contentType = file.getContentType();
+        if (contentType != null) {
+            if (contentType.startsWith("image")) {
+                uploadResponse = cloudinaryService.uploadImage(file);
+                mediaType = "image";
+            } else if (contentType.equals("application/pdf")) {
+                uploadResponse = cloudinaryService.uploadFile(file);
+                mediaType = "application";
+            } else if (contentType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+                uploadResponse = cloudinaryService.uploadFile(file);
+                mediaType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            } else {
+                uploadResponse = cloudinaryService.uploadFile(file);
+            }
         } else {
-            uploadResponse = cloudinaryService.uploadFile(file);
-            mediaType = "raw";
+            throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "Unsupported file type");
         }
 
         String publicId = (String) uploadResponse.get("public_id");
@@ -68,6 +79,7 @@ public class FileServiceImpl implements FileService {
         fileRepository.save(fileResult);
         return getFileResponse(fileResult);
     }
+
 
 
     @Override

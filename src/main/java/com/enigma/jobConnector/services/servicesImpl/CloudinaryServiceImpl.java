@@ -22,47 +22,94 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private final Cloudinary cloudinary;
     private final CloudinaryFeignClient cloudinaryFeignClient;
 
-
+    /**
+     * Upload an image to Cloudinary.
+     *
+     * @param file MultipartFile representing the image to be uploaded.
+     * @return Map containing the upload result from Cloudinary.
+     */
     @Override
     public Map<String, Object> uploadImage(MultipartFile file) {
         try {
-            return cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "image"));
+            return cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.asMap("resource_type", "image")
+            );
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload image", e);
+            log.error("Error while uploading image to Cloudinary: {}", e.getMessage());
+            throw new RuntimeException("Failed to upload image. Please try again.", e);
         }
     }
 
+    /**
+     * Upload any file (image, pdf, etc.) to Cloudinary.
+     *
+     * @param file MultipartFile representing the file to be uploaded.
+     * @return Map containing the upload result from Cloudinary.
+     */
     @Override
     public Map<String, Object> uploadFile(MultipartFile file) {
         try {
             String originalFilename = file.getOriginalFilename();
-            String extension = FilenameUtils.getExtension(originalFilename);
+            if (originalFilename == null || originalFilename.isBlank()) {
+                throw new RuntimeException("File must have a valid name.");
+            }
 
-            String randomName = UUID.randomUUID().toString();
+            String baseName = FilenameUtils.getBaseName(originalFilename);
+            String extension = FilenameUtils.getExtension(originalFilename).toLowerCase();
 
-            String filenameWithExtension = randomName + "." + extension;
-            return cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", "auto", "public_id", filenameWithExtension));
+            if (extension.isBlank()) {
+                throw new RuntimeException("File must have a valid extension.");
+            }
+
+            String uniqueFileName = UUID.randomUUID().toString();
+
+            String resourceType = extension.equals("pdf") || extension.equals("docx") ? "raw" : "auto";
+
+            return cloudinary.uploader().upload(
+                    file.getBytes(),
+                    ObjectUtils.asMap(
+                            "resource_type", resourceType,
+                            "public_id", uniqueFileName
+                    )
+            );
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file", e);
+            log.error("Error while uploading file to Cloudinary: {}", e.getMessage());
+            throw new RuntimeException("Failed to upload file. Please try again.", e);
         }
     }
 
+
+    /**
+     * Delete a file from Cloudinary by its public ID.
+     *
+     * @param publicId Public ID of the file to be deleted.
+     * @return Result of the deletion operation.
+     */
     @Override
     public String deleteFile(String publicId) {
         try {
             Map deleteResult = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
             return (String) deleteResult.get("result");
         } catch (IOException e) {
-            throw new RuntimeException("Failed to delete file", e);
+            log.error("Error while deleting file from Cloudinary: {}", e.getMessage());
+            throw new RuntimeException("Failed to delete file. Please try again.", e);
         }
     }
 
+    /**
+     * Fetch a file from Cloudinary using its path.
+     *
+     * @param imagePath Path to the file in Cloudinary.
+     * @return Byte array representing the file content.
+     */
     @Override
     public byte[] getFile(String imagePath) {
         try {
             return cloudinaryFeignClient.getImage(imagePath);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to fetch file", e);
+            log.error("Error while fetching file from Cloudinary: {}", e.getMessage());
+            throw new RuntimeException("Failed to fetch file. Please try again.", e);
         }
     }
 }
