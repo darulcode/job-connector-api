@@ -70,7 +70,7 @@ public class TestDetailServiceImpl implements TestDetailService {
         return getTestResponse(getOne(id));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public List<TestResponse> findAllTestByUser() {
         AuthenticationContextUtil.validateCurrentUser();
