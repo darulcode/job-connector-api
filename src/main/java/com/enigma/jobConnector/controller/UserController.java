@@ -1,10 +1,7 @@
 package com.enigma.jobConnector.controller;
 
 import com.enigma.jobConnector.constants.Constant;
-import com.enigma.jobConnector.dto.request.ChangePasswordRequest;
-import com.enigma.jobConnector.dto.request.ForgotPasswordRequest;
-import com.enigma.jobConnector.dto.request.UserRequest;
-import com.enigma.jobConnector.dto.request.UserSearchRequest;
+import com.enigma.jobConnector.dto.request.*;
 import com.enigma.jobConnector.dto.response.UserResponse;
 import com.enigma.jobConnector.services.UserService;
 import com.enigma.jobConnector.utils.ResponseUtil;
@@ -91,9 +88,9 @@ public class UserController {
     }
 
     @Operation(summary = "Send forgot password to email user")
-    @PostMapping("/forgot/{email}")
-    public ResponseEntity<?> forgotPassword(@PathVariable String email) throws MessagingException, IOException {
-        userService.sendForgotPassword(email);
+    @PostMapping("/forgot/email")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordEmailRequest request) throws MessagingException, IOException {
+        userService.sendForgotPassword(request.getEmail());
         return ResponseUtil.buildResponse(HttpStatus.OK, Constant.SUCCESS_SEND_FORGOT_PASSWORD, null);
     }
 
