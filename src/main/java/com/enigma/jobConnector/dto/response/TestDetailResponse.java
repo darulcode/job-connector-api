@@ -17,4 +17,5 @@ public class TestDetailResponse {
     private String submissionText;
     private String fileSubmission;
     private String fileName;
+    private String email;
 }

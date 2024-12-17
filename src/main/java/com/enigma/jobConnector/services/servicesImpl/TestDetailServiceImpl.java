@@ -161,6 +161,7 @@ public class TestDetailServiceImpl implements TestDetailService {
                 .submissionText(testDetail.getSubmissionText())
                 .fileSubmission(fileSubmission)
                 .fileName(fileName)
+                .email(testDetail.getUser().getEmail())
                 .build();
     }
 
