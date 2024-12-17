@@ -21,17 +21,12 @@ public class EmailServiceImpl implements EmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
 
-
     @Override
     public void sendEmail(String to, String subject, String url) throws MessagingException {
-        templateEngine.addTemplateResolver(new ClassLoaderTemplateResolver() {
-            {
-                setPrefix("templates/");
-                setSuffix(".html");
-            }
-        });
-        String htmlContent = templateEngine.process("email-template", new Context());
-        htmlContent = htmlContent.replace("[[URL]]", url);
+        Context context = new Context();
+        log.info(url);
+        context.setVariable("URL", url);
+        String htmlContent = templateEngine.process("email-template", context);
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -41,5 +36,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setFrom("darulcrypto@gmail.com");
 
         mailSender.send(message);
+        log.info("Email sent to {}", to);
     }
 }
+
