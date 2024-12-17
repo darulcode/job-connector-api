@@ -181,6 +181,7 @@ public class TestServiceImpl implements TestService {
                 .description(test.getDescription())
                 .deadlineAt(test.getDeadlineAt().toString())
                 .client(test.getClient().getName())
+                .clientId(test.getClient().getId())
                 .admin(test.getUser().getName())
                 .file(fileTestResponse)
                 .status(test.getStatus().getDescription())

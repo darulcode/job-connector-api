@@ -16,6 +16,7 @@ public class TestResponse {
     private String createdAt;
     private String deadlineAt;
     private String client;
+    private String clientId;
     private FileTestResponse file;
     private String admin;
     private String description;
