@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
         String uuid = String.valueOf(UUID.randomUUID());
         user.setCode(uuid);
         userRepository.save(user);
-        emailService.sendEmail(email, "Forgot Password Url", "https://web.enigjob.my.id/verify?code="+uuid);
+        emailService.sendEmail(email, "Enigma Job Connector", "https://web.enigjob.my.id/verify?code="+uuid);
     }
 
     @Override
