@@ -61,13 +61,15 @@ public class UserController {
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy", required = false) String sortBy,
-            @RequestParam(name = "name", required = false) String query) {
+            @RequestParam(name = "name", required = false) String query,
+            @RequestParam(name = "role", required = false) String role ) {
 
         UserSearchRequest userSearchRequest = UserSearchRequest.builder()
                 .query(query)
                 .sortBy(sortBy)
                 .size(size)
                 .page(page)
+                .role(role)
                 .build();
         Page<UserResponse> response = userService.findAllUser(userSearchRequest);
         return ResponseUtil.buildResponsePage(HttpStatus.OK, Constant.SUCCESS_FETCHING_ALL_USER, response);

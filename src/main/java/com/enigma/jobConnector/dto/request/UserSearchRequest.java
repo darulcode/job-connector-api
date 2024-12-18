@@ -14,4 +14,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class UserSearchRequest extends PagingAndShortingRequest {
     private String query;
+    private String role;
 }
