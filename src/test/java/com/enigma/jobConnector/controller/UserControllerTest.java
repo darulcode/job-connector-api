@@ -273,9 +273,12 @@ class UserControllerTest {
         Mockito.doNothing().when(userService).sendForgotPassword(email);
 
         String requestBody = """
+                {
+                    "email": "email@email.com"
+                }
                 """;
 
-        var result = mockMvc.perform(MockMvcRequestBuilders.post(Constant.USER_API + "/forgot/" + email)
+        var result = mockMvc.perform(MockMvcRequestBuilders.post(Constant.USER_API + "/forgot/email")
                         .contentType("application/json")
                         .content(requestBody))
                 .andExpect(MockMvcResultMatchers.status().isOk())
