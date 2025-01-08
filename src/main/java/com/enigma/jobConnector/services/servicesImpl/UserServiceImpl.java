@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode("password"))
                 .build();
 
-        if (userRepository.findByEmail("superadmin@enigma.com").isPresent()) {return;}
+        if (userRepository.findByEmail( "superadmin@enigma.com").isPresent()) {return;}
         userRepository.save(user);
     }
 
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
             userCategory = userCategoryService.getOne(userRequest.getCategoryId());
         }
 
-        Optional<User> userResult = userRepository.findByEmail(userRequest.getEmail());
+        Optional<User> userResult = userRepository.findByEmail( userRequest.getEmail());
         if (userResult.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USERNAME_OR_EMAIL_ALREADY_EXIST);
         }
@@ -180,7 +180,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void sendForgotPassword(String email) throws MessagingException, IOException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.INVALID_CREDENTIAL));
+        User user = userRepository.findActiveUserByEmail( email).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.INVALID_CREDENTIAL));
         //TODO: generate jwt or something for code forgot user
         String uuid = String.valueOf(UUID.randomUUID());
         user.setCode(uuid);
@@ -211,7 +211,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USER_NOT_FOUND));
+        return userRepository.findActiveUserByEmail( email).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, Constant.USER_NOT_FOUND));
     }
 
     private UserResponse getUserResponse(User user) {
