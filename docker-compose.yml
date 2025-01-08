@@ -40,9 +40,9 @@ services:
       REFRESH_TOKEN_EXPIRATION_IN_HOUR: 24
       REDIS_HOST: job-connector-redis
       REDIS_PORT: 6379
-      CLOUDINARY_NAME: dgodtvrvm
-      CLOUDINARY_API_KEY: 697688718351951
-      CLOUDINARY_SECRET_KEY: xIjmvyhRqj5uN8SA2n8DF_5tFE4
+      CLOUDINARY_NAME:
+      CLOUDINARY_API_KEY:
+      CLOUDINARY_SECRET_KEY:
     ports:
       - "8080:8080"
     depends_on:
